@@ -70,10 +70,10 @@ const COReadinessReview = ({ onNavigateToDashboard, onNavigateToBOM }) => {
       <div className="max-w-[1800px] mx-auto px-8 py-8">
         {/* Summary Stats */}
         <div className="grid grid-cols-4 gap-6 mb-8">
-          {categories.map(({ key, label, color, range, icon: Icon }) => (
+          {categories.map(({ key, testId, label, color, range, icon: Icon }) => (
             <div 
               key={key}
-              data-testid={`readiness-category-${key}`}
+              data-testid={`readiness-category-${testId}`}
               className={`kpi-card border-l-4 border-l-${color}-500`}
             >
               <div className="flex items-center justify-between mb-3">
