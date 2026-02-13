@@ -22,10 +22,10 @@ const COReadinessReview = ({ onNavigateToDashboard, onNavigateToBOM }) => {
   };
 
   const categories = [
-    { key: 'ready', label: 'Ready', color: 'green', range: '90-100%', icon: CheckCircle2 },
-    { key: 'inProgress', label: 'In Progress', color: 'blue', range: '70-89%', icon: TrendingUp },
-    { key: 'atRisk', label: 'At Risk', color: 'amber', range: '40-69%', icon: AlertTriangle },
-    { key: 'blocked', label: 'Blocked', color: 'red', range: '0-39%', icon: AlertTriangle },
+    { key: 'ready', testId: 'ready', label: 'Ready', color: 'green', range: '90-100%', icon: CheckCircle2 },
+    { key: 'inProgress', testId: 'in-progress', label: 'In Progress', color: 'blue', range: '70-89%', icon: TrendingUp },
+    { key: 'atRisk', testId: 'at-risk', label: 'At Risk', color: 'amber', range: '40-69%', icon: AlertTriangle },
+    { key: 'blocked', testId: 'blocked', label: 'Blocked', color: 'red', range: '0-39%', icon: AlertTriangle },
   ];
 
   return (
