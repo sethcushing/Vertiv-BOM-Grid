@@ -1,52 +1,65 @@
-import { useEffect } from "react";
+import { useState } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+import Dashboard from "./components/Dashboard";
+import BOMGrid from "./components/BOMGrid";
+import COReadinessReview from "./components/COReadinessReview";
+import ItemDetailDrawer from "./components/ItemDetailDrawer";
+import { Toaster } from "sonner";
 
 function App() {
+  const [currentView, setCurrentView] = useState('dashboard');
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const handleSelectItem = (item) => {
+    setSelectedItem(item);
+  };
+
+  const handleCloseDrawer = () => {
+    setSelectedItem(null);
+  };
+
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <Toaster 
+        position="top-right" 
+        toastOptions={{
+          style: {
+            background: 'white',
+            border: '1px solid #e2e8f0',
+            borderRadius: '2px',
+          },
+        }}
+      />
+      
+      {currentView === 'dashboard' && (
+        <Dashboard
+          onNavigateToBOM={() => setCurrentView('bom-grid')}
+          onNavigateToCO={() => setCurrentView('co-readiness')}
+        />
+      )}
+      
+      {currentView === 'bom-grid' && (
+        <>
+          <BOMGrid
+            onNavigateToDashboard={() => setCurrentView('dashboard')}
+            onNavigateToCO={() => setCurrentView('co-readiness')}
+            onSelectItem={handleSelectItem}
+          />
+          {selectedItem && (
+            <ItemDetailDrawer
+              item={selectedItem}
+              onClose={handleCloseDrawer}
+            />
+          )}
+        </>
+      )}
+      
+      {currentView === 'co-readiness' && (
+        <COReadinessReview
+          onNavigateToDashboard={() => setCurrentView('dashboard')}
+          onNavigateToBOM={() => setCurrentView('bom-grid')}
+        />
+      )}
     </div>
   );
 }

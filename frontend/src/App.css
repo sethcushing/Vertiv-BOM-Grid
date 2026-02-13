@@ -1,34 +1,89 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+.App {
+  min-height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+/* Industrial theme overrides */
+.font-display {
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.02em;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
 }
 
-.App-link {
-    color: #61dafb;
+/* Custom scrollbar for grid */
+.bom-grid-scroll::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.bom-grid-scroll::-webkit-scrollbar-track {
+  background: #f1f5f9;
 }
+
+.bom-grid-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.bom-grid-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Drawer backdrop */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
+  z-index: 40;
+}
+
+/* Animation utilities */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Status badge colors - inline for Tailwind JIT */
+.bg-green-500 { background-color: #22c55e; }
+.bg-blue-500 { background-color: #3b82f6; }
+.bg-amber-500 { background-color: #f59e0b; }
+.bg-red-500 { background-color: #ef4444; }
+.bg-orange-500 { background-color: #f97316; }
+
+.text-green-700 { color: #15803d; }
+.text-blue-700 { color: #1d4ed8; }
+.text-amber-700 { color: #b45309; }
+.text-red-700 { color: #b91c1c; }
+.text-orange-700 { color: #c2410c; }
+
+.border-l-green-500 { border-left-color: #22c55e; }
+.border-l-blue-500 { border-left-color: #3b82f6; }
+.border-l-amber-500 { border-left-color: #f59e0b; }
+.border-l-red-500 { border-left-color: #ef4444; }
+.border-l-orange-500 { border-left-color: #f97316; }
