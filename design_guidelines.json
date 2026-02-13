@@ -1,0 +1,157 @@
+{
+  "brand": {
+    "name": "Vertiv BOM Grid",
+    "identity": "The Industrial Crystal",
+    "tone": "Precision, Robustness, Clarity, Industrial Engineering",
+    "description": "A high-precision Bill of Materials management tool for engineering change order tracking. Aesthetics inspired by industrial architecture and precision instrumentation."
+  },
+  "typography": {
+    "fonts": [
+      {
+        "family": "Barlow Condensed",
+        "url": "https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&display=swap",
+        "usage": "Headings, KPIs, Navigation Labels",
+        "fallback": "sans-serif"
+      },
+      {
+        "family": "Inter",
+        "url": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap",
+        "usage": "Body text, UI elements, Tooltips",
+        "fallback": "sans-serif"
+      },
+      {
+        "family": "JetBrains Mono",
+        "url": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap",
+        "usage": "Data tables, Part Numbers, Technical Specs",
+        "fallback": "monospace"
+      }
+    ],
+    "scale": {
+      "h1": "text-4xl font-bold tracking-tight font-display uppercase",
+      "h2": "text-2xl font-semibold tracking-tight font-display uppercase",
+      "h3": "text-xl font-medium tracking-normal font-display",
+      "body": "text-sm font-normal tracking-wide leading-relaxed font-sans",
+      "caption": "text-xs font-medium text-muted-foreground uppercase tracking-wider font-sans",
+      "data": "text-sm font-medium font-mono text-foreground"
+    }
+  },
+  "colors": {
+    "palette": {
+      "primary": {
+        "name": "Industrial Orange",
+        "hex": "#F97316",
+        "tailwind": "orange-500",
+        "usage": "Primary Actions, Active States, Critical Alerts, Progress Bars"
+      },
+      "secondary": {
+        "name": "Slate Steel",
+        "hex": "#475569",
+        "tailwind": "slate-600",
+        "usage": "Secondary Actions, Borders, Icons"
+      },
+      "background": {
+        "main": "#F8FAFC",
+        "card": "#FFFFFF",
+        "sidebar": "#F1F5F9"
+      },
+      "neutral": {
+        "hex": "#64748B",
+        "tailwind": "slate-500"
+      },
+      "roles": {
+        "engineering": "#0EA5E9",
+        "procurement": "#10B981",
+        "pm": "#8B5CF6"
+      }
+    },
+    "gradients": {
+      "glass": "bg-white/80 backdrop-blur-md border border-white/20 shadow-sm",
+      "glass_hover": "hover:bg-white/90 transition-all duration-200",
+      "active_item": "bg-orange-50/50 border-l-4 border-orange-500"
+    }
+  },
+  "design_strategies": {
+    "glassmorphism": {
+      "style": "Crystal Clarity",
+      "rules": [
+        "Use high opacity (80%+) for legibility over data.",
+        "Always include a 1px border (border-slate-200/60) to define edges.",
+        "Use 'backdrop-blur-md' for depth.",
+        "Never use glass backgrounds for the main data grid content (only headers and overlays)."
+      ]
+    },
+    "layout": {
+      "dashboard": "Bento Grid Mode B (High Density)",
+      "bom_grid": "Full-width data table with sticky headers and collapsible sidebar",
+      "spacing": "Dense but breathable. Use p-4 for standard containers, p-6 for dashboards.",
+      "radius": "rounded-sm (Industrial Sharpness)"
+    },
+    "visual_enhancers": {
+      "texture": "Subtle noise on sidebar backgrounds to reduce sterility.",
+      "borders": "1px solid slate-200 for structure. No soft shadows for data rows.",
+      "shadows": "shadow-sm for cards, shadow-lg for floating drawers."
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-orange-500 hover:bg-orange-600 text-white rounded-sm font-medium uppercase tracking-wide px-6 py-2 shadow-sm transition-all active:scale-95",
+      "secondary": "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-sm font-medium px-4 py-2",
+      "ghost": "hover:bg-slate-100 text-slate-600 rounded-sm"
+    },
+    "cards": {
+      "kpi": "bg-white/90 backdrop-blur-sm border border-slate-200 rounded-sm p-5 shadow-sm relative overflow-hidden group hover:border-orange-200 transition-colors",
+      "dashboard_widget": "bg-white border border-slate-200 rounded-sm shadow-sm h-full"
+    },
+    "grid": {
+      "header": "bg-slate-50/90 backdrop-blur-sm border-b border-slate-200 text-slate-500 font-bold text-xs uppercase tracking-wider h-10 px-4 text-left sticky top-0 z-10",
+      "row": "border-b border-slate-100 hover:bg-slate-50/50 transition-colors h-12 text-sm text-slate-700 group",
+      "cell": "px-4 py-2 align-middle truncate"
+    },
+    "status_badge": {
+      "base": "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border",
+      "ready": "bg-green-50 text-green-700 border-green-200",
+      "blocked": "bg-red-50 text-red-700 border-red-200",
+      "in_progress": "bg-blue-50 text-blue-700 border-blue-200",
+      "draft": "bg-slate-100 text-slate-600 border-slate-200"
+    }
+  },
+  "assets": {
+    "icons": {
+      "library": "lucide-react",
+      "style": "Stroke width 1.5px (Fine)",
+      "mapping": {
+        "dashboard": "LayoutDashboard",
+        "bom": "Layers",
+        "pre_co": "FileEdit",
+        "readiness": "CheckCircle2",
+        "filter": "Filter",
+        "settings": "Settings",
+        "engineering": "Wrench",
+        "procurement": "ShoppingCart",
+        "pm": "Briefcase",
+        "alert": "AlertTriangle",
+        "success": "Check",
+        "menu": "Menu"
+      }
+    },
+    "images": [
+      {
+        "category": "project_cover",
+        "url": "https://images.unsplash.com/photo-1517815154571-fbabad618f3f?auto=format&fit=crop&q=80&w=2000",
+        "description": "Abstract industrial orange concrete structure for project dashboard headers."
+      }
+    ]
+  },
+  "universal_guidelines": [
+    "Always use 'Barlow Condensed' for headings and KPIs.",
+    "Use 'JetBrains Mono' for all Part Numbers, IDs, and tabular numeric data.",
+    "Primary Action Color is Orange-500. Do not use it for backgrounds, only interactions.",
+    "Glassmorphism is for 'floating' elements (Sticky Headers, Drawers, Modals, Toasts). Base layers should be solid.",
+    "Data Density is priority: Use compact padding (py-2) in grid rows.",
+    "All interactive elements must have `data-testid` attributes.",
+    "Use `sonner` for toast notifications.",
+    "Do not use gradients for main backgrounds. Use solid whites or very light grays.",
+    "Role-based views should act as 'filters' for column visibility.",
+    "Industrial Theme means: Sharp corners (rounded-sm), high contrast borders, and monospaced data."
+  ]
+}
