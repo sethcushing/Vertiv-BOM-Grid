@@ -445,23 +445,27 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                   </div>
                 )}
                 
-                {/* Expand/Collapse */}
-                <div className="w-14 px-3 py-4 border-r border-gray-200 flex items-center justify-center">
-                  {item.hasChildren && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleExpand(item.id);
-                      }}
-                      className="hover:bg-gray-200 rounded-lg p-1.5 transition-colors"
-                    >
-                      {expandedItems.has(item.id) ? (
-                        <ChevronDown className="w-4 h-4 text-gray-600" />
-                      ) : (
-                        <ChevronRight className="w-4 h-4 text-gray-600" />
-                      )}
-                    </button>
-                  )}
+                {/* Expand/Collapse with Tree Indentation */}
+                <div className="w-14 px-3 py-4 border-r border-gray-200 flex items-center">
+                  <div style={{ marginLeft: `${item.level * 16}px` }} className="flex items-center">
+                    {item.hasChildren ? (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleExpand(item.id);
+                        }}
+                        className="hover:bg-gray-200 rounded-lg p-1.5 transition-colors"
+                      >
+                        {expandedItems.has(item.id) ? (
+                          <ChevronDown className="w-4 h-4 text-gray-600" />
+                        ) : (
+                          <ChevronRight className="w-4 h-4 text-gray-600" />
+                        )}
+                      </button>
+                    ) : (
+                      <div className="w-7 h-7" /> 
+                    )}
+                  </div>
                 </div>
 
                 {/* Level */}
@@ -470,10 +474,7 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                 </div>
 
                 {/* Item Number */}
-                <div
-                  className="w-36 px-3 py-4 border-r border-gray-200 font-mono font-semibold flex items-center gap-2"
-                  style={{ paddingLeft: `${item.level * 16 + 12}px` }}
-                >
+                <div className="w-36 px-3 py-4 border-r border-gray-200 font-mono font-semibold flex items-center gap-2">
                   <span className={item.isPreCO ? 'text-orange-700' : 'text-gray-900'}>
                     {item.itemNumber}
                   </span>
