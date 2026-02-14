@@ -126,26 +126,26 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header */}
-      <div className="glass-strong border-b border-slate-200 sticky top-0 z-20">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between mb-4">
+      <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-20">
+        <div className="px-6 py-5">
+          <div className="flex items-center justify-between mb-5">
             <div>
               <div className="flex items-center gap-3">
                 <button
                   onClick={onNavigateToDashboard}
                   data-testid="back-to-dashboard-btn"
-                  className="text-sm text-orange-600 hover:text-orange-700 font-medium uppercase tracking-wide"
+                  className="text-sm text-orange-600 hover:text-orange-700 font-semibold flex items-center gap-1"
                 >
                   ← Dashboard
                 </button>
-                <span className="text-slate-300">|</span>
-                <h1 className="text-xl font-display font-semibold text-slate-900 uppercase tracking-tight">
+                <span className="text-gray-300">|</span>
+                <h1 className="text-2xl font-display text-gray-900">
                   BOM Convergence Grid
                 </h1>
               </div>
-              <p className="text-sm text-slate-500 mt-1">
+              <p className="text-sm text-gray-500 mt-1 font-medium">
                 Enterprise Convergence & Readiness Workspace • {visibleRows.length} items shown
               </p>
             </div>
@@ -153,21 +153,21 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
               <button
                 onClick={onNavigateToCO}
                 data-testid="co-readiness-btn"
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-sm font-medium text-sm"
+                className="btn-secondary"
               >
                 <AlertTriangle className="w-4 h-4" />
                 CO Readiness Review
               </button>
               <button 
                 data-testid="export-btn"
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-sm font-medium text-sm"
+                className="btn-secondary"
               >
                 <Download className="w-4 h-4" />
                 Export
               </button>
               <button 
                 data-testid="refresh-btn"
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-sm font-medium text-sm"
+                className="btn-secondary"
               >
                 <RefreshCw className="w-4 h-4" />
                 Refresh
@@ -177,18 +177,18 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
 
           {/* Controls */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               {/* Role View Toggle */}
-              <div className="flex items-center gap-1 bg-slate-100 rounded-sm p-1">
+              <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1.5">
                 {['Engineering', 'Procurement', 'PM'].map(role => (
                   <button
                     key={role}
                     onClick={() => setRoleView(role)}
                     data-testid={`role-${role.toLowerCase()}-btn`}
-                    className={`flex items-center gap-2 px-4 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                    className={`toggle-btn ${
                       roleView === role
-                        ? 'bg-white text-slate-900 shadow-sm'
-                        : 'text-slate-600 hover:text-slate-900'
+                        ? 'toggle-btn-active'
+                        : 'toggle-btn-inactive'
                     }`}
                   >
                     {getRoleIcon(role)}
@@ -197,17 +197,17 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                 ))}
               </div>
               
-              <div className="h-6 w-px bg-slate-300"></div>
+              <div className="h-8 w-px bg-gray-200"></div>
               
               {/* View Mode Toggle */}
-              <div className="flex items-center gap-1 bg-slate-100 rounded-sm p-1">
+              <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1.5">
                 <button
                   onClick={() => setViewMode('all')}
                   data-testid="view-all-btn"
-                  className={`flex items-center gap-2 px-4 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                  className={`toggle-btn ${
                     viewMode === 'all'
-                      ? 'bg-white text-slate-900 shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900'
+                      ? 'toggle-btn-active'
+                      : 'toggle-btn-inactive'
                   }`}
                 >
                   <Layers className="w-4 h-4" />
@@ -216,16 +216,20 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                 <button
                   onClick={() => setViewMode('preco-only')}
                   data-testid="view-preco-btn"
-                  className={`flex items-center gap-2 px-4 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                  className={`toggle-btn ${
                     viewMode === 'preco-only'
-                      ? 'bg-orange-500 text-white shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900'
+                      ? 'bg-orange-500 text-white shadow-md'
+                      : 'toggle-btn-inactive'
                   }`}
                 >
                   <Plus className="w-4 h-4" />
                   Pre-CO Workspace
                   {preCOStats.total > 0 && (
-                    <span className="ml-1 bg-orange-600 text-white text-xs px-1.5 py-0.5 rounded-sm">
+                    <span className={`ml-1 text-xs px-2 py-0.5 rounded-full ${
+                      viewMode === 'preco-only' 
+                        ? 'bg-orange-600 text-white' 
+                        : 'bg-orange-500 text-white'
+                    }`}>
                       {preCOStats.total}
                     </span>
                   )}
@@ -235,10 +239,10 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
               <button
                 onClick={() => setFilters(prev => ({ ...prev, myItems: !prev.myItems }))}
                 data-testid="my-items-btn"
-                className={`flex items-center gap-2 px-4 py-2 rounded-sm font-medium text-sm ${
+                className={`toggle-btn rounded-xl px-4 ${
                   filters.myItems 
-                    ? 'bg-orange-500 text-white' 
-                    : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                    ? 'bg-orange-500 text-white shadow-md' 
+                    : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
                 }`}
               >
                 <Users className="w-4 h-4" />
@@ -247,10 +251,10 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
               <button
                 onClick={() => setShowFilters(!showFilters)}
                 data-testid="filter-toggle-btn"
-                className={`flex items-center gap-2 px-4 py-2 rounded-sm font-medium text-sm ${
+                className={`toggle-btn rounded-xl px-4 ${
                   showFilters 
-                    ? 'bg-orange-500 text-white' 
-                    : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                    ? 'bg-orange-500 text-white shadow-md' 
+                    : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
                 }`}
               >
                 <Filter className="w-4 h-4" />
@@ -258,41 +262,41 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
               </button>
             </div>
 
-            <div className="text-sm text-slate-500 flex items-center gap-2 font-mono">
+            <div className="text-sm text-gray-500 flex items-center gap-2 font-mono">
               Last refreshed: {projectSummary.lastRefreshed}
             </div>
           </div>
           
           {/* Pre-CO Workspace Actions Bar */}
           {viewMode === 'preco-only' && (
-            <div className="mt-4 bg-orange-50 border border-orange-200 rounded-sm p-4">
+            <div className="mt-5 bg-gradient-to-br from-orange-50 to-amber-50/50 border border-orange-200 rounded-xl p-5">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-8">
                   <div>
-                    <div className="text-2xl font-display font-semibold text-orange-900">{preCOStats.total}</div>
-                    <div className="text-xs text-orange-700 uppercase tracking-wider">Pre-CO Items</div>
+                    <div className="text-3xl font-display text-orange-900">{preCOStats.total}</div>
+                    <div className="text-xs text-orange-700 font-semibold uppercase tracking-wider">Pre-CO Items</div>
                   </div>
-                  <div className="h-8 w-px bg-orange-300"></div>
+                  <div className="h-10 w-px bg-orange-300"></div>
                   <div>
-                    <div className="text-2xl font-display font-semibold text-orange-900">{preCOStats.averageReadiness}%</div>
-                    <div className="text-xs text-orange-700 uppercase tracking-wider">Avg Design Readiness</div>
+                    <div className="text-3xl font-display text-orange-900">{preCOStats.averageReadiness}%</div>
+                    <div className="text-xs text-orange-700 font-semibold uppercase tracking-wider">Avg Design Readiness</div>
                   </div>
-                  <div className="h-8 w-px bg-orange-300"></div>
+                  <div className="h-10 w-px bg-orange-300"></div>
                   <div>
-                    <div className="text-2xl font-display font-semibold text-orange-900">{preCOStats.readyForSubmission}</div>
-                    <div className="text-xs text-orange-700 uppercase tracking-wider">Ready for CO</div>
+                    <div className="text-3xl font-display text-orange-900">{preCOStats.readyForSubmission}</div>
+                    <div className="text-xs text-orange-700 font-semibold uppercase tracking-wider">Ready for CO</div>
                   </div>
                   
                   {selectedPreCOItems.size > 0 && (
                     <>
-                      <div className="h-8 w-px bg-orange-300"></div>
+                      <div className="h-10 w-px bg-orange-300"></div>
                       <div>
-                        <div className="text-sm font-medium text-orange-900">
+                        <div className="text-sm font-semibold text-orange-900">
                           {selectedPreCOItems.size} selected
                         </div>
                         <button 
                           onClick={clearPreCOSelection}
-                          className="text-xs text-orange-600 hover:text-orange-700 underline"
+                          className="text-xs text-orange-600 hover:text-orange-700 font-medium underline"
                         >
                           Clear selection
                         </button>
@@ -301,11 +305,11 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                   )}
                 </div>
                 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                   {selectedPreCOItems.size > 0 && (
                     <button
                       data-testid="submit-to-co-btn"
-                      className="flex items-center gap-2 px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-sm font-medium uppercase tracking-wide shadow-sm transition-all active:scale-95"
+                      className="btn-primary"
                     >
                       <Send className="w-4 h-4" />
                       Submit to CO ({selectedPreCOItems.size})
@@ -313,7 +317,7 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                   )}
                   <button
                     data-testid="create-preco-btn"
-                    className="flex items-center gap-2 px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-sm font-medium uppercase tracking-wide shadow-sm transition-all active:scale-95"
+                    className="btn-primary"
                   >
                     <Plus className="w-4 h-4" />
                     Create Pre-CO Item
@@ -327,38 +331,38 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
 
       {/* Filter Panel */}
       {showFilters && (
-        <div className="glass-strong border-b border-slate-200 px-6 py-4">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-display font-semibold text-slate-900 uppercase tracking-wide">Filters</h3>
-            <button onClick={() => setShowFilters(false)} className="text-slate-400 hover:text-slate-600">
-              <X className="w-4 h-4" />
+        <div className="bg-white border-b border-gray-200 px-6 py-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-display text-lg text-gray-900">Filters</h3>
+            <button onClick={() => setShowFilters(false)} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100">
+              <X className="w-5 h-5" />
             </button>
           </div>
-          <div className="flex flex-wrap gap-4">
-            <div className="flex items-center gap-2">
-              <label className="text-sm text-slate-600">Blocked Only:</label>
+          <div className="flex flex-wrap gap-6">
+            <div className="flex items-center gap-3">
+              <label className="text-sm text-gray-600 font-medium">Blocked Only:</label>
               <input 
                 type="checkbox" 
                 checked={filters.blockedOnly}
                 onChange={(e) => setFilters({...filters, blockedOnly: e.target.checked})}
-                className="w-4 h-4 text-orange-500 border-slate-300 rounded focus:ring-orange-500"
+                className="w-5 h-5 text-orange-500 border-gray-300 rounded-md focus:ring-orange-500"
               />
             </div>
-            <div className="flex items-center gap-2">
-              <label className="text-sm text-slate-600">Show Pre-CO:</label>
+            <div className="flex items-center gap-3">
+              <label className="text-sm text-gray-600 font-medium">Show Pre-CO:</label>
               <input 
                 type="checkbox" 
                 checked={filters.showPreCO}
                 onChange={(e) => setFilters({...filters, showPreCO: e.target.checked})}
-                className="w-4 h-4 text-orange-500 border-slate-300 rounded focus:ring-orange-500"
+                className="w-5 h-5 text-orange-500 border-gray-300 rounded-md focus:ring-orange-500"
               />
             </div>
-            <div className="flex items-center gap-2">
-              <label className="text-sm text-slate-600">Make/Buy:</label>
+            <div className="flex items-center gap-3">
+              <label className="text-sm text-gray-600 font-medium">Make/Buy:</label>
               <select 
                 value={filters.makeBuy[0] || ''}
                 onChange={(e) => setFilters({...filters, makeBuy: e.target.value ? [e.target.value] : []})}
-                className="px-3 py-1 border border-slate-200 rounded-sm text-sm"
+                className="px-4 py-2 border border-gray-200 rounded-xl text-sm font-medium bg-white"
               >
                 <option value="">All</option>
                 <option value="Make">Make</option>
@@ -371,46 +375,46 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
       )}
 
       {/* Grid Container */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto bg-white mx-6 my-6 rounded-2xl shadow-lg border border-gray-100">
         <div className="min-w-max">
           {/* Header Row */}
-          <div className="grid-header flex text-xs font-bold text-slate-500 uppercase tracking-wider">
+          <div className="grid-header flex text-xs font-bold text-gray-500 uppercase tracking-wider rounded-t-2xl">
             {viewMode === 'preco-only' && (
-              <div className="w-10 px-2 py-2 border-r border-slate-200 flex items-center justify-center">
+              <div className="w-12 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
                 <input
                   type="checkbox"
                   checked={selectedPreCOItems.size > 0 && selectedPreCOItems.size === filteredItems.filter(i => i.isPreCO).length}
                   onChange={(e) => e.target.checked ? selectAllPreCO() : clearPreCOSelection()}
-                  className="w-4 h-4 text-orange-500 border-slate-300 rounded focus:ring-orange-500"
+                  className="w-4 h-4 text-orange-500 border-gray-300 rounded-md focus:ring-orange-500"
                 />
               </div>
             )}
-            <div className="w-12 px-3 py-2 border-r border-slate-200"></div>
-            <div className="w-16 px-3 py-2 border-r border-slate-200">Level</div>
-            <div className="w-32 px-3 py-2 border-r border-slate-200">Item #</div>
-            <div className="w-16 px-3 py-2 border-r border-slate-200">Rev</div>
-            <div className="w-64 px-3 py-2 border-r border-slate-200">Description</div>
-            <div className="w-32 px-3 py-2 border-r border-slate-200">Commodity</div>
-            <div className="w-28 px-3 py-2 border-r border-slate-200">Plant</div>
+            <div className="w-14 px-3 py-3 border-r border-gray-200"></div>
+            <div className="w-16 px-3 py-3 border-r border-gray-200">Level</div>
+            <div className="w-36 px-3 py-3 border-r border-gray-200">Item #</div>
+            <div className="w-16 px-3 py-3 border-r border-gray-200">Rev</div>
+            <div className="w-72 px-3 py-3 border-r border-gray-200">Description</div>
+            <div className="w-36 px-3 py-3 border-r border-gray-200">Commodity</div>
+            <div className="w-32 px-3 py-3 border-r border-gray-200">Plant</div>
             
             {/* Role-specific columns */}
             {(roleView === 'Engineering' || roleView === 'PM') && (
               <>
-                <div className="w-28 px-3 py-2 border-r border-slate-200">Eng Owner</div>
-                <div className="w-28 px-3 py-2 border-r border-slate-200">Design Status</div>
+                <div className="w-32 px-3 py-3 border-r border-gray-200">Eng Owner</div>
+                <div className="w-28 px-3 py-3 border-r border-gray-200">Design Status</div>
               </>
             )}
             {(roleView === 'Procurement' || roleView === 'PM') && (
               <>
-                <div className="w-24 px-3 py-2 border-r border-slate-200">Make/Buy</div>
-                <div className="w-36 px-3 py-2 border-r border-slate-200">Supplier</div>
-                <div className="w-28 px-3 py-2 border-r border-slate-200">Quote Status</div>
+                <div className="w-24 px-3 py-3 border-r border-gray-200">Make/Buy</div>
+                <div className="w-40 px-3 py-3 border-r border-gray-200">Supplier</div>
+                <div className="w-28 px-3 py-3 border-r border-gray-200">Quote Status</div>
               </>
             )}
             
-            <div className="w-28 px-3 py-2 border-r border-slate-200">Lifecycle</div>
-            <div className="w-24 px-3 py-2 border-r border-slate-200">Readiness</div>
-            <div className="w-24 px-3 py-2">Blockers</div>
+            <div className="w-28 px-3 py-3 border-r border-gray-200">Lifecycle</div>
+            <div className="w-28 px-3 py-3 border-r border-gray-200">Readiness</div>
+            <div className="w-24 px-3 py-3">Blockers</div>
           </div>
 
           {/* Data Rows */}
@@ -419,16 +423,16 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
               <div
                 key={item.id}
                 data-testid={`bom-row-${item.id}`}
-                className={`flex text-sm border-b cursor-pointer transition-colors ${
+                className={`flex text-sm border-b cursor-pointer transition-all duration-200 ${
                   item.isPreCO 
-                    ? 'bg-orange-50/50 border-l-4 border-l-orange-500 border-b-orange-100 hover:bg-orange-100/50' 
-                    : 'border-slate-100 hover:bg-slate-50'
+                    ? 'bg-gradient-to-r from-orange-50/70 to-amber-50/30 border-l-4 border-l-orange-500 border-b-orange-100 hover:from-orange-100/70 hover:to-amber-100/30' 
+                    : 'border-gray-100 hover:bg-gray-50'
                 }`}
                 onClick={() => onSelectItem(item)}
               >
                 {/* Checkbox for Pre-CO items */}
                 {viewMode === 'preco-only' && item.isPreCO && (
-                  <div className="w-10 px-2 py-3 border-r border-slate-200 flex items-center justify-center">
+                  <div className="w-12 px-3 py-4 border-r border-gray-200 flex items-center justify-center">
                     <input
                       type="checkbox"
                       checked={selectedPreCOItems.has(item.id)}
@@ -436,77 +440,77 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                         e.stopPropagation();
                         togglePreCOSelection(item.id);
                       }}
-                      className="w-4 h-4 text-orange-500 border-slate-300 rounded focus:ring-orange-500"
+                      className="w-4 h-4 text-orange-500 border-gray-300 rounded-md focus:ring-orange-500"
                     />
                   </div>
                 )}
                 
                 {/* Expand/Collapse */}
-                <div className="w-12 px-3 py-3 border-r border-slate-200 flex items-center justify-center">
+                <div className="w-14 px-3 py-4 border-r border-gray-200 flex items-center justify-center">
                   {item.hasChildren && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleExpand(item.id);
                       }}
-                      className="hover:bg-slate-200 rounded p-1"
+                      className="hover:bg-gray-200 rounded-lg p-1.5 transition-colors"
                     >
                       {expandedItems.has(item.id) ? (
-                        <ChevronDown className="w-4 h-4 text-slate-600" />
+                        <ChevronDown className="w-4 h-4 text-gray-600" />
                       ) : (
-                        <ChevronRight className="w-4 h-4 text-slate-600" />
+                        <ChevronRight className="w-4 h-4 text-gray-600" />
                       )}
                     </button>
                   )}
                 </div>
 
                 {/* Level */}
-                <div className="w-16 px-3 py-3 border-r border-slate-200 text-slate-500 font-mono">
+                <div className="w-16 px-3 py-4 border-r border-gray-200 text-gray-500 font-mono font-semibold">
                   {item.level}
                 </div>
 
                 {/* Item Number */}
                 <div
-                  className="w-32 px-3 py-3 border-r border-slate-200 font-mono font-medium flex items-center gap-2"
+                  className="w-36 px-3 py-4 border-r border-gray-200 font-mono font-semibold flex items-center gap-2"
                   style={{ paddingLeft: `${item.level * 16 + 12}px` }}
                 >
-                  <span className={item.isPreCO ? 'text-orange-700' : 'text-slate-900'}>
+                  <span className={item.isPreCO ? 'text-orange-700' : 'text-gray-900'}>
                     {item.itemNumber}
                   </span>
                   {item.isPreCO && (
-                    <span className="status-badge bg-orange-100 text-orange-700 border-orange-200">
+                    <span className="status-badge bg-orange-100 text-orange-700 border-orange-200 text-[10px] py-0.5 px-2">
                       Pre-CO
                     </span>
                   )}
                 </div>
 
                 {/* Revision */}
-                <div className="w-16 px-3 py-3 border-r border-slate-200 text-slate-600 font-mono">
+                <div className="w-16 px-3 py-4 border-r border-gray-200 text-gray-600 font-mono">
                   {item.revision}
                 </div>
 
                 {/* Description */}
-                <div className="w-64 px-3 py-3 border-r border-slate-200 text-slate-900 truncate">
+                <div className="w-72 px-3 py-4 border-r border-gray-200 text-gray-900">
                   {item.description}
                 </div>
 
                 {/* Commodity */}
-                <div className="w-32 px-3 py-3 border-r border-slate-200 text-slate-600 text-xs truncate">
+                <div className="w-36 px-3 py-4 border-r border-gray-200 text-gray-600 text-xs">
                   {item.commodity}
                 </div>
 
                 {/* Plant */}
-                <div className="w-28 px-3 py-3 border-r border-slate-200 text-slate-600 text-xs">
+                <div className="w-32 px-3 py-4 border-r border-gray-200 text-gray-600 text-xs">
                   {item.plant.split(',')[0]}
                 </div>
 
                 {/* Engineering columns */}
                 {(roleView === 'Engineering' || roleView === 'PM') && (
                   <>
-                    <div className="w-28 px-3 py-3 border-r border-slate-200 text-slate-600 text-xs truncate">
+                    <div className="w-32 px-3 py-4 border-r border-gray-200 text-gray-600 text-xs">
                       {item.engOwner}
                     </div>
-                    <div className="w-28 px-3 py-3 border-r border-slate-200">
+                    <div className="w-28 px-3 py-4 border-r border-gray-200">
                       <span className={`status-badge ${
                         item.designStatus === 'Released' ? 'status-ready' : 
                         item.designStatus === 'In Review' ? 'status-progress' : 
@@ -521,7 +525,7 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                 {/* Procurement columns */}
                 {(roleView === 'Procurement' || roleView === 'PM') && (
                   <>
-                    <div className="w-24 px-3 py-3 border-r border-slate-200">
+                    <div className="w-24 px-3 py-4 border-r border-gray-200">
                       <span className={`status-badge ${
                         item.makeBuy === 'Make' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
                         item.makeBuy === 'Buy' ? 'bg-green-50 text-green-700 border-green-200' : 
@@ -530,10 +534,10 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                         {item.makeBuy}
                       </span>
                     </div>
-                    <div className="w-36 px-3 py-3 border-r border-slate-200 text-slate-900 text-xs truncate">
-                      {item.approvedSupplier || item.potentialSupplier || '-'}
+                    <div className="w-40 px-3 py-4 border-r border-gray-200 text-gray-900 text-xs">
+                      {item.approvedSupplier || item.potentialSupplier || '—'}
                     </div>
-                    <div className="w-28 px-3 py-3 border-r border-slate-200">
+                    <div className="w-28 px-3 py-4 border-r border-gray-200">
                       <span className={`status-badge ${
                         item.quoteStatus === 'Received' ? 'status-ready' : 
                         item.quoteStatus === 'Pending' ? 'status-warning' : 
@@ -546,7 +550,7 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                 )}
 
                 {/* Lifecycle */}
-                <div className="w-28 px-3 py-3 border-r border-slate-200">
+                <div className="w-28 px-3 py-4 border-r border-gray-200">
                   <span className={`status-badge ${
                     item.lifecycleState === 'Released' ? 'status-ready' : 
                     item.lifecycleState === 'In Review' ? 'status-progress' : 
@@ -558,29 +562,29 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                 </div>
 
                 {/* Readiness */}
-                <div className="w-24 px-3 py-3 border-r border-slate-200">
+                <div className="w-28 px-3 py-4 border-r border-gray-200">
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                    <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div
                         className={`h-full ${getReadinessColor(item.overallReadiness)} progress-fill`}
                         style={{ width: `${item.overallReadiness}%` }}
                       />
                     </div>
-                    <span className={`text-xs font-mono font-medium ${getReadinessTextColor(item.overallReadiness)}`}>
+                    <span className={`text-xs font-mono font-semibold ${getReadinessTextColor(item.overallReadiness)}`}>
                       {item.overallReadiness}%
                     </span>
                   </div>
                 </div>
 
                 {/* Blockers */}
-                <div className="w-24 px-3 py-3">
+                <div className="w-24 px-3 py-4">
                   {item.blockers.length > 0 && (
                     <div className="flex items-center gap-2">
                       <span className="status-badge status-blocked">
                         {item.blockers.length}
                       </span>
                       {item.blockerAging > 0 && (
-                        <span className="text-xs text-slate-500">{item.blockerAging}d</span>
+                        <span className="text-xs text-gray-500 font-mono">{item.blockerAging}d</span>
                       )}
                     </div>
                   )}
