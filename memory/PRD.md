@@ -7,11 +7,19 @@ Build a modern Vertiv BOM Grid - a Bill of Materials management tool based on an
 - Industrial orange color theme
 - Seed data for now, with future database integration for reading/enriching data
 
+## Design Updates (Feb 2026)
+- Changed font to **Roboto Slab** (bold serif) for headings to match Vertiv brand
+- Added more rounded corners (2xl/xl radius) throughout
+- Improved shadows and hover effects on cards
+- **Increased drawer width from 600px to 750px** to prevent text compounding
+- Added backdrop blur on drawer overlay
+- Better spacing in all sections
+
 ## Architecture & Tech Stack
 - **Frontend**: React.js with Tailwind CSS
 - **Backend**: FastAPI (Python)
 - **Database**: MongoDB (ready for future integration)
-- **Styling**: Industrial glassmorphism theme with Barlow Condensed, Inter, and JetBrains Mono fonts
+- **Fonts**: Roboto Slab (headings), Inter (body), JetBrains Mono (data)
 
 ## User Personas
 1. **Manufacturing Engineers** - Track design readiness, manufacturing review status
@@ -32,15 +40,18 @@ Build a modern Vertiv BOM Grid - a Bill of Materials management tool based on an
 - [x] BOM Grid with 14 sample items (hierarchical structure)
 - [x] Role-based view toggles (Engineering, Procurement, PM)
 - [x] Pre-CO Workspace view mode
-- [x] Item Detail Drawer with CO eligibility status
+- [x] Item Detail Drawer with CO eligibility status (750px width)
 - [x] CO Readiness Review page with distribution visualization
 - [x] Filter panel (basic filters)
 - [x] Backend API endpoints for BOM data
+- [x] Modern rounded design with Roboto Slab font
+- [x] Improved shadows and visual depth
 
 ## Prioritized Backlog
 ### P0 (Critical)
 - [x] Core navigation flows - DONE
 - [x] Data rendering - DONE
+- [x] Modern design updates - DONE
 
 ### P1 (High Priority)
 - [ ] Database integration for reading production data
@@ -68,6 +79,7 @@ Build a modern Vertiv BOM Grid - a Bill of Materials management tool based on an
 
 ## Design System
 - **Primary Color**: Industrial Orange (#F97316)
-- **Typography**: Barlow Condensed (headings), Inter (body), JetBrains Mono (data)
-- **Style**: Glassmorphism with subtle blur effects
+- **Typography**: Roboto Slab (headings), Inter (body), JetBrains Mono (data)
+- **Border Radius**: 2xl (16px) for cards, xl (12px) for buttons
+- **Shadows**: Subtle depth with hover states
 - **Theme**: Light mode with high contrast for data visibility
