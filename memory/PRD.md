@@ -46,6 +46,7 @@ Build a modern Vertiv BOM Grid - a Bill of Materials management tool based on an
 - [x] Backend API endpoints for BOM data
 - [x] Modern rounded design with Roboto Slab font
 - [x] Improved shadows and visual depth
+- [x] **BOM Grid alignment fix** - All items now collapse by default, tree indentation moved to expand/collapse column for proper alignment (Feb 14, 2026)
 
 ## Prioritized Backlog
 ### P0 (Critical)
