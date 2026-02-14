@@ -18,7 +18,7 @@ import {
 import { sampleBOMData, projectSummary } from '../data/bomData';
 
 const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
-  const [expandedItems, setExpandedItems] = useState(new Set(['1', '2']));
+  const [expandedItems, setExpandedItems] = useState(new Set());
   const [roleView, setRoleView] = useState('PM');
   const [viewMode, setViewMode] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
