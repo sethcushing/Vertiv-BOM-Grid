@@ -53,6 +53,7 @@ Build a modern Vertiv BOM Grid - a Bill of Materials management tool based on an
 - [x] Core navigation flows - DONE
 - [x] Data rendering - DONE
 - [x] Modern design updates - DONE
+- [x] BOM Grid alignment fix - DONE (Feb 14, 2026)
 
 ### P1 (High Priority)
 - [ ] Database integration for reading production data
