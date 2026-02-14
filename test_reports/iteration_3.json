@@ -1,0 +1,42 @@
+{
+  "summary": "Verified BOM Grid alignment fix - all items now collapse by default, expand/collapse works correctly, and columns are properly aligned across all hierarchy levels",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "BOM Grid starts with all items collapsed by default (only Level 0 visible - ASM-12000)",
+    "Clicking expand arrow on parent row shows children underneath",
+    "Multi-level expand works (Level 0 -> Level 1 -> Level 2)",
+    "Row alignment is correct - all columns align with headers regardless of level",
+    "Item # column content aligns properly with header (all at left=145px)",
+    "Level column displays correct level numbers (0, 1, 2)",
+    "Tree indentation is in expand/collapse column only (0px for L0, 16px for L1, 32px for L2)",
+    "Collapse functionality works - children removed when parent collapsed",
+    "Dashboard loads correctly with KPI stats (72% Progress, 8 Blockers, 23 At Risk, 5 Orderable)",
+    "Navigation between Dashboard and BOM Grid works bidirectionally",
+    "Pre-CO items displayed with orange highlight and badge"
+  ],
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A - frontend only test",
+    "frontend": "100%"
+  },
+  "seed_data_creation": "None - using existing bomData.js seed data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "BOM Grid alignment bug has been fixed. The expandedItems state now initializes as empty Set() instead of Set(['1', '2']), ensuring all items start collapsed. Tree indentation moved from Item # cell to expand/collapse column for proper alignment. All column alignment verified working correctly.",
+  "bug_fix_verification": {
+    "original_issue": "Second line was offline from first line when collapsed - alignment error",
+    "fix_applied": "1) Changed default expandedItems from Set(['1', '2']) to empty Set() for collapsed default, 2) Moved tree indentation from Item # cell padding to expand/collapse column",
+    "verification_result": "PASSED - Items start collapsed, alignment is correct across all levels"
+  }
+}
