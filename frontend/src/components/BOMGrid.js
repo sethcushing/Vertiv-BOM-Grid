@@ -6,31 +6,37 @@ import {
   RefreshCw, 
   Download,
   AlertTriangle,
-  Plus,
-  Send,
   Layers,
   Users,
   Wrench,
   ShoppingCart,
   Briefcase,
-  X
+  X,
+  Package,
+  AlertCircle,
+  TrendingUp,
+  Calendar,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  Database,
+  Sparkles
 } from 'lucide-react';
-import { sampleBOMData, projectSummary } from '../data/bomData';
+import { sampleBOMData, projectSummary, bomKPIs } from '../data/bomData';
 
 const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
   const [expandedItems, setExpandedItems] = useState(new Set());
   const [roleView, setRoleView] = useState('PM');
-  const [viewMode, setViewMode] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedPreCOItems, setSelectedPreCOItems] = useState(new Set());
   const [bomData] = useState(sampleBOMData);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   
   const [filters, setFilters] = useState({
     plant: [],
     blockedOnly: false,
-    showPreCO: true,
     makeBuy: [],
-    myItems: false
+    myItems: false,
+    lifecycleStage: []
   });
 
   const toggleExpand = (itemId) => {
@@ -43,34 +49,82 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
     setExpandedItems(newExpanded);
   };
 
+  // Handle column sorting
+  const handleSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // Get sort icon for column header
+  const getSortIcon = (key) => {
+    if (sortConfig.key !== key) {
+      return <ArrowUpDown className="w-3 h-3 opacity-50" />;
+    }
+    return sortConfig.direction === 'asc' 
+      ? <ArrowUp className="w-3 h-3 text-orange-600" />
+      : <ArrowDown className="w-3 h-3 text-orange-600" />;
+  };
+
+  // Filter items
   const filteredItems = useMemo(() => {
     return bomData.filter(item => {
-      if (viewMode === 'preco-only' && !item.isPreCO) return false;
-      if (!filters.showPreCO && item.isPreCO) return false;
-      if (filters.plant.length > 0 && !filters.plant.includes(item.plant)) return false;
       if (filters.blockedOnly && item.blockers.length === 0) return false;
       if (filters.makeBuy.length > 0 && !filters.makeBuy.includes(item.makeBuy)) return false;
+      if (filters.lifecycleStage.length > 0 && !filters.lifecycleStage.includes(item.lifecycleStage)) return false;
       return true;
     });
-  }, [bomData, filters, viewMode]);
+  }, [bomData, filters]);
 
+  // Sort items
+  const sortedItems = useMemo(() => {
+    if (!sortConfig.key) return filteredItems;
+    
+    return [...filteredItems].sort((a, b) => {
+      let aValue = a[sortConfig.key];
+      let bValue = b[sortConfig.key];
+      
+      // Handle nested values and special cases
+      if (sortConfig.key === 'supplier') {
+        aValue = a.approvedSupplier || a.potentialSupplier || '';
+        bValue = b.approvedSupplier || b.potentialSupplier || '';
+      }
+      
+      // Handle numbers
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+      
+      // Handle strings
+      aValue = String(aValue || '').toLowerCase();
+      bValue = String(bValue || '').toLowerCase();
+      
+      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [filteredItems, sortConfig]);
+
+  // Build visible rows (hierarchical)
   const visibleRows = useMemo(() => {
     const rows = [];
     
     const addItemAndChildren = (item) => {
       rows.push(item);
       if (item.hasChildren && expandedItems.has(item.id)) {
-        const children = filteredItems.filter(i => i.parentId === item.id);
+        const children = sortedItems.filter(i => i.parentId === item.id);
         children.forEach(child => addItemAndChildren(child));
       }
     };
 
-    filteredItems.filter(item => item.level === 0).forEach(item => {
+    sortedItems.filter(item => item.level === 0).forEach(item => {
       addItemAndChildren(item);
     });
 
     return rows;
-  }, [filteredItems, expandedItems]);
+  }, [sortedItems, expandedItems]);
 
   const getReadinessColor = (readiness) => {
     if (readiness >= 90) return 'bg-green-500';
@@ -86,34 +140,31 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
     return 'text-red-700';
   };
 
-  const preCOStats = useMemo(() => {
-    const precoItems = bomData.filter(item => item.isPreCO);
-    return {
-      total: precoItems.length,
-      averageReadiness: precoItems.length > 0 
-        ? Math.round(precoItems.reduce((sum, item) => sum + item.designReadiness, 0) / precoItems.length)
-        : 0,
-      readyForSubmission: precoItems.filter(item => item.designReadiness >= 80).length,
-    };
-  }, [bomData]);
-
-  const togglePreCOSelection = (itemId) => {
-    const newSelection = new Set(selectedPreCOItems);
-    if (newSelection.has(itemId)) {
-      newSelection.delete(itemId);
-    } else {
-      newSelection.add(itemId);
+  // V23: Lifecycle Stage badge colors
+  const getLifecycleStageStyle = (stage) => {
+    switch(stage) {
+      case 'Orderable':
+        return 'bg-green-100 text-green-800 border-green-300';
+      case 'CCO In Progress':
+        return 'bg-purple-100 text-purple-800 border-purple-300';
+      case 'CO Approved':
+        return 'bg-blue-100 text-blue-800 border-blue-300';
+      case 'CO Submitted':
+        return 'bg-orange-100 text-orange-800 border-orange-300';
+      case 'Ready for CO':
+        return 'bg-cyan-100 text-cyan-800 border-cyan-300';
+      case 'Draft':
+      default:
+        return 'bg-gray-100 text-gray-700 border-gray-300';
     }
-    setSelectedPreCOItems(newSelection);
   };
 
-  const selectAllPreCO = () => {
-    const precoIds = filteredItems.filter(item => item.isPreCO).map(item => item.id);
-    setSelectedPreCOItems(new Set(precoIds));
-  };
-
-  const clearPreCOSelection = () => {
-    setSelectedPreCOItems(new Set());
+  // V23: AML badge colors
+  const getAMLStyle = (aml) => {
+    if (aml === 0) return 'bg-red-100 text-red-700';
+    if (aml <= 2) return 'bg-amber-100 text-amber-700';
+    if (aml === 3) return 'bg-green-100 text-green-700';
+    return 'bg-emerald-100 text-emerald-700';
   };
 
   const getRoleIcon = (role) => {
@@ -125,12 +176,23 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
     }
   };
 
+  // Sortable header component
+  const SortableHeader = ({ label, sortKey, width, className = '' }) => (
+    <div 
+      className={`${width} px-3 py-3 border-r border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors flex items-center justify-between gap-1 ${className}`}
+      onClick={() => handleSort(sortKey)}
+    >
+      <span>{label}</span>
+      {getSortIcon(sortKey)}
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-20">
-        <div className="px-6 py-5">
-          <div className="flex items-center justify-between mb-5">
+        <div className="px-6 py-4">
+          <div className="flex items-center justify-between mb-4">
             <div>
               <div className="flex items-center gap-3">
                 <button
@@ -142,11 +204,11 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                 </button>
                 <span className="text-gray-300">|</span>
                 <h1 className="text-2xl font-display text-gray-900">
-                  BOM Convergence Grid
+                  BOM Grid
                 </h1>
               </div>
               <p className="text-sm text-gray-500 mt-1 font-medium">
-                Enterprise Convergence & Readiness Workspace • {visibleRows.length} items shown
+                {visibleRows.length} items shown • Last refreshed: {projectSummary.lastRefreshed}
               </p>
             </div>
             <div className="flex gap-3">
@@ -202,37 +264,11 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
               {/* View Mode Toggle */}
               <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1.5">
                 <button
-                  onClick={() => setViewMode('all')}
                   data-testid="view-all-btn"
-                  className={`toggle-btn ${
-                    viewMode === 'all'
-                      ? 'toggle-btn-active'
-                      : 'toggle-btn-inactive'
-                  }`}
+                  className="toggle-btn toggle-btn-active"
                 >
                   <Layers className="w-4 h-4" />
                   All Items
-                </button>
-                <button
-                  onClick={() => setViewMode('preco-only')}
-                  data-testid="view-preco-btn"
-                  className={`toggle-btn ${
-                    viewMode === 'preco-only'
-                      ? 'bg-orange-500 text-white shadow-md'
-                      : 'toggle-btn-inactive'
-                  }`}
-                >
-                  <Plus className="w-4 h-4" />
-                  Pre-CO Workspace
-                  {preCOStats.total > 0 && (
-                    <span className={`ml-1 text-xs px-2 py-0.5 rounded-full ${
-                      viewMode === 'preco-only' 
-                        ? 'bg-orange-600 text-white' 
-                        : 'bg-orange-500 text-white'
-                    }`}>
-                      {preCOStats.total}
-                    </span>
-                  )}
                 </button>
               </div>
               
@@ -261,71 +297,95 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                 Filters
               </button>
             </div>
+          </div>
+        </div>
+      </div>
 
-            <div className="text-sm text-gray-500 flex items-center gap-2 font-mono">
-              Last refreshed: {projectSummary.lastRefreshed}
+      {/* V23: KPI Analytics Bar */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="grid grid-cols-4 gap-4">
+          {/* KPI 1: Not Yet in ERP */}
+          <div className="border border-gray-200 rounded-xl px-4 py-3 bg-white shadow-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <Package className={`w-4 h-4 ${
+                bomKPIs.notYetInERP.percentage > 25 ? 'text-red-600' :
+                bomKPIs.notYetInERP.percentage > 10 ? 'text-amber-600' : 'text-emerald-600'
+              }`} />
+              <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Not Yet in ERP</span>
+            </div>
+            <div className="text-2xl font-display text-gray-900">{bomKPIs.notYetInERP.percentage}%</div>
+            <div className="text-xs text-gray-500 mt-1">
+              {bomKPIs.notYetInERP.count} of {bomKPIs.notYetInERP.total} items
             </div>
           </div>
-          
-          {/* Pre-CO Workspace Actions Bar */}
-          {viewMode === 'preco-only' && (
-            <div className="mt-5 bg-gradient-to-br from-orange-50 to-amber-50/50 border border-orange-200 rounded-xl p-5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-8">
-                  <div>
-                    <div className="text-3xl font-display text-orange-900">{preCOStats.total}</div>
-                    <div className="text-xs text-orange-700 font-semibold uppercase tracking-wider">Pre-CO Items</div>
-                  </div>
-                  <div className="h-10 w-px bg-orange-300"></div>
-                  <div>
-                    <div className="text-3xl font-display text-orange-900">{preCOStats.averageReadiness}%</div>
-                    <div className="text-xs text-orange-700 font-semibold uppercase tracking-wider">Avg Design Readiness</div>
-                  </div>
-                  <div className="h-10 w-px bg-orange-300"></div>
-                  <div>
-                    <div className="text-3xl font-display text-orange-900">{preCOStats.readyForSubmission}</div>
-                    <div className="text-xs text-orange-700 font-semibold uppercase tracking-wider">Ready for CO</div>
-                  </div>
-                  
-                  {selectedPreCOItems.size > 0 && (
-                    <>
-                      <div className="h-10 w-px bg-orange-300"></div>
-                      <div>
-                        <div className="text-sm font-semibold text-orange-900">
-                          {selectedPreCOItems.size} selected
-                        </div>
-                        <button 
-                          onClick={clearPreCOSelection}
-                          className="text-xs text-orange-600 hover:text-orange-700 font-medium underline"
-                        >
-                          Clear selection
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-                
-                <div className="flex items-center gap-3">
-                  {selectedPreCOItems.size > 0 && (
-                    <button
-                      data-testid="submit-to-co-btn"
-                      className="btn-primary"
-                    >
-                      <Send className="w-4 h-4" />
-                      Submit to CO ({selectedPreCOItems.size})
-                    </button>
-                  )}
-                  <button
-                    data-testid="create-preco-btn"
-                    className="btn-primary"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Create Pre-CO Item
-                  </button>
-                </div>
-              </div>
+
+          {/* KPI 2: Pending COs */}
+          <div className="border border-gray-200 rounded-xl px-4 py-3 bg-white shadow-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <AlertCircle className={`w-4 h-4 ${
+                bomKPIs.pendingCOs.count > 10 ? 'text-red-600' :
+                bomKPIs.pendingCOs.count > 5 ? 'text-amber-600' : 'text-emerald-600'
+              }`} />
+              <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Pending COs</span>
             </div>
-          )}
+            <div className="text-2xl font-display text-gray-900">{bomKPIs.pendingCOs.count}</div>
+            <div className="text-xs text-gray-500 mt-1">
+              Avg Aging: {bomKPIs.pendingCOs.avgAging} days
+            </div>
+          </div>
+
+          {/* KPI 3: Items Not Orderable */}
+          <div className="border border-gray-200 rounded-xl px-4 py-3 bg-white shadow-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <TrendingUp className={`w-4 h-4 ${
+                bomKPIs.notOrderable.percentage > 20 ? 'text-red-600' :
+                bomKPIs.notOrderable.percentage > 10 ? 'text-amber-600' : 'text-emerald-600'
+              }`} />
+              <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Not Orderable</span>
+            </div>
+            <div className="text-2xl font-display text-gray-900">{bomKPIs.notOrderable.percentage}%</div>
+            <div className="text-xs text-gray-500 mt-1">
+              {bomKPIs.notOrderable.count} of {bomKPIs.notOrderable.total} items
+            </div>
+          </div>
+
+          {/* KPI 4: Clear-to-Build Gap */}
+          <div className="border border-gray-200 rounded-xl px-4 py-3 bg-white shadow-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <Calendar className={`w-4 h-4 ${
+                bomKPIs.clearToBuild.status === 'late' ? 'text-red-600' :
+                bomKPIs.clearToBuild.status === 'ontime' ? 'text-amber-600' : 'text-emerald-600'
+              }`} />
+              <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Clear-to-Build</span>
+            </div>
+            <div className="text-2xl font-display text-gray-900">{bomKPIs.clearToBuild.forecastedDate}</div>
+            <div className={`text-xs font-semibold mt-1 ${
+              bomKPIs.clearToBuild.status === 'late' ? 'text-red-600' : 'text-emerald-600'
+            }`}>
+              {bomKPIs.clearToBuild.status === 'late' ? '+' : '-'}{Math.abs(bomKPIs.clearToBuild.gapDays)} days {bomKPIs.clearToBuild.status}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* V23: Data Source Legend */}
+      <div className="bg-white border-b border-gray-200 px-6 py-2">
+        <div className="flex items-center justify-end gap-4">
+          <span className="text-xs font-semibold text-gray-600">Data Source:</span>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 bg-blue-100 border border-blue-300 rounded"></div>
+              <span className="text-xs text-gray-600">PLM (Read Only)</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 bg-emerald-100 border border-emerald-300 rounded"></div>
+              <span className="text-xs text-gray-600">ERP (Read Only)</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 bg-orange-100 border border-orange-300 rounded"></div>
+              <span className="text-xs text-gray-600">Editable (Pre-CO)</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -349,15 +409,6 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
               />
             </div>
             <div className="flex items-center gap-3">
-              <label className="text-sm text-gray-600 font-medium">Show Pre-CO:</label>
-              <input 
-                type="checkbox" 
-                checked={filters.showPreCO}
-                onChange={(e) => setFilters({...filters, showPreCO: e.target.checked})}
-                className="w-5 h-5 text-orange-500 border-gray-300 rounded-md focus:ring-orange-500"
-              />
-            </div>
-            <div className="flex items-center gap-3">
               <label className="text-sm text-gray-600 font-medium">Make/Buy:</label>
               <select 
                 value={filters.makeBuy[0] || ''}
@@ -370,6 +421,22 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                 <option value="TBD">TBD</option>
               </select>
             </div>
+            <div className="flex items-center gap-3">
+              <label className="text-sm text-gray-600 font-medium">Lifecycle Stage:</label>
+              <select 
+                value={filters.lifecycleStage[0] || ''}
+                onChange={(e) => setFilters({...filters, lifecycleStage: e.target.value ? [e.target.value] : []})}
+                className="px-4 py-2 border border-gray-200 rounded-xl text-sm font-medium bg-white"
+              >
+                <option value="">All</option>
+                <option value="Draft">Draft</option>
+                <option value="Ready for CO">Ready for CO</option>
+                <option value="CO Submitted">CO Submitted</option>
+                <option value="CO Approved">CO Approved</option>
+                <option value="CCO In Progress">CCO In Progress</option>
+                <option value="Orderable">Orderable</option>
+              </select>
+            </div>
           </div>
         </div>
       )}
@@ -377,44 +444,37 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
       {/* Grid Container */}
       <div className="flex-1 overflow-auto bg-white mx-6 my-6 rounded-2xl shadow-lg border border-gray-100">
         <div className="min-w-max">
-          {/* Header Row */}
+          {/* Header Row - Sortable */}
           <div className="grid-header flex text-xs font-bold text-gray-500 uppercase tracking-wider rounded-t-2xl">
-            {viewMode === 'preco-only' && (
-              <div className="w-12 px-3 py-3 border-r border-gray-200 flex items-center justify-center">
-                <input
-                  type="checkbox"
-                  checked={selectedPreCOItems.size > 0 && selectedPreCOItems.size === filteredItems.filter(i => i.isPreCO).length}
-                  onChange={(e) => e.target.checked ? selectAllPreCO() : clearPreCOSelection()}
-                  className="w-4 h-4 text-orange-500 border-gray-300 rounded-md focus:ring-orange-500"
-                />
-              </div>
-            )}
             <div className="w-14 px-3 py-3 border-r border-gray-200"></div>
-            <div className="w-16 px-3 py-3 border-r border-gray-200">Level</div>
-            <div className="w-36 px-3 py-3 border-r border-gray-200">Item #</div>
-            <div className="w-16 px-3 py-3 border-r border-gray-200">Rev</div>
-            <div className="w-72 px-3 py-3 border-r border-gray-200">Description</div>
-            <div className="w-36 px-3 py-3 border-r border-gray-200">Commodity</div>
-            <div className="w-32 px-3 py-3 border-r border-gray-200">Plant</div>
+            <SortableHeader label="Level" sortKey="level" width="w-16" />
+            <SortableHeader label="Item #" sortKey="itemNumber" width="w-36" />
+            <SortableHeader label="Rev" sortKey="revision" width="w-16" />
+            <SortableHeader label="Description" sortKey="description" width="w-64" />
+            <SortableHeader label="Commodity" sortKey="commodity" width="w-36" />
+            <SortableHeader label="Plant" sortKey="plant" width="w-32" />
+            
+            {/* V23: Lifecycle Stage Column */}
+            <SortableHeader label="Lifecycle" sortKey="lifecycleStage" width="w-32" />
             
             {/* Role-specific columns */}
             {(roleView === 'Engineering' || roleView === 'PM') && (
               <>
-                <div className="w-32 px-3 py-3 border-r border-gray-200">Eng Owner</div>
-                <div className="w-28 px-3 py-3 border-r border-gray-200">Design Status</div>
+                <SortableHeader label="Eng Owner" sortKey="engOwner" width="w-32" />
+                <SortableHeader label="Design Status" sortKey="designStatus" width="w-28" />
               </>
             )}
             {(roleView === 'Procurement' || roleView === 'PM') && (
               <>
-                <div className="w-24 px-3 py-3 border-r border-gray-200">Make/Buy</div>
-                <div className="w-40 px-3 py-3 border-r border-gray-200">Supplier</div>
-                <div className="w-28 px-3 py-3 border-r border-gray-200">Quote Status</div>
+                <SortableHeader label="Make/Buy" sortKey="makeBuy" width="w-24" />
+                <SortableHeader label="Supplier" sortKey="supplier" width="w-40" />
+                <SortableHeader label="Quote Status" sortKey="quoteStatus" width="w-28" />
+                <SortableHeader label="AML" sortKey="aml" width="w-16" />
               </>
             )}
             
-            <div className="w-28 px-3 py-3 border-r border-gray-200">Lifecycle</div>
-            <div className="w-28 px-3 py-3 border-r border-gray-200">Readiness</div>
-            <div className="w-24 px-3 py-3">Blockers</div>
+            <SortableHeader label="Readiness" sortKey="overallReadiness" width="w-28" />
+            <SortableHeader label="Blockers" sortKey="blockerAging" width="w-24" className="border-r-0" />
           </div>
 
           {/* Data Rows */}
@@ -424,27 +484,12 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                 key={item.id}
                 data-testid={`bom-row-${item.id}`}
                 className={`flex text-sm border-b cursor-pointer transition-all duration-200 ${
-                  item.isPreCO 
-                    ? 'bg-gradient-to-r from-orange-50/70 to-amber-50/30 border-l-4 border-l-orange-500 border-b-orange-100 hover:from-orange-100/70 hover:to-amber-100/30' 
+                  item.lifecycleStage === 'Draft' 
+                    ? 'bg-gradient-to-r from-amber-50/50 to-orange-50/30 border-l-4 border-l-amber-400 hover:from-amber-100/50 hover:to-orange-100/30' 
                     : 'border-gray-100 hover:bg-gray-50'
                 }`}
                 onClick={() => onSelectItem(item)}
               >
-                {/* Checkbox for Pre-CO items */}
-                {viewMode === 'preco-only' && item.isPreCO && (
-                  <div className="w-12 px-3 py-4 border-r border-gray-200 flex items-center justify-center">
-                    <input
-                      type="checkbox"
-                      checked={selectedPreCOItems.has(item.id)}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        togglePreCOSelection(item.id);
-                      }}
-                      className="w-4 h-4 text-orange-500 border-gray-300 rounded-md focus:ring-orange-500"
-                    />
-                  </div>
-                )}
-                
                 {/* Expand/Collapse with Tree Indentation */}
                 <div className="w-14 px-3 py-4 border-r border-gray-200 flex items-center">
                   <div style={{ marginLeft: `${item.level * 16}px` }} className="flex items-center">
@@ -473,14 +518,14 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                   {item.level}
                 </div>
 
-                {/* Item Number */}
+                {/* Item Number with PLM Badge */}
                 <div className="w-36 px-3 py-4 border-r border-gray-200 font-mono font-semibold flex items-center gap-2">
-                  <span className={item.isPreCO ? 'text-orange-700' : 'text-gray-900'}>
+                  <span className={item.lifecycleStage === 'Draft' ? 'text-amber-700' : 'text-blue-700'}>
                     {item.itemNumber}
                   </span>
-                  {item.isPreCO && (
-                    <span className="status-badge bg-orange-100 text-orange-700 border-orange-200 text-[10px] py-0.5 px-2">
-                      Pre-CO
+                  {item.isNewPart && (
+                    <span className="status-badge bg-green-100 text-green-700 border-green-200 text-[10px] py-0.5 px-1.5">
+                      New
                     </span>
                   )}
                 </div>
@@ -491,7 +536,7 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                 </div>
 
                 {/* Description */}
-                <div className="w-72 px-3 py-4 border-r border-gray-200 text-gray-900">
+                <div className="w-64 px-3 py-4 border-r border-gray-200 text-gray-900 truncate">
                   {item.description}
                 </div>
 
@@ -505,6 +550,13 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                   {item.plant.split(',')[0]}
                 </div>
 
+                {/* V23: Lifecycle Stage */}
+                <div className="w-32 px-3 py-4 border-r border-gray-200">
+                  <span className={`status-badge border ${getLifecycleStageStyle(item.lifecycleStage)}`}>
+                    {item.lifecycleStage}
+                  </span>
+                </div>
+
                 {/* Engineering columns */}
                 {(roleView === 'Engineering' || roleView === 'PM') && (
                   <>
@@ -512,13 +564,16 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                       {item.engOwner}
                     </div>
                     <div className="w-28 px-3 py-4 border-r border-gray-200">
-                      <span className={`status-badge ${
-                        item.designStatus === 'Released' ? 'status-ready' : 
-                        item.designStatus === 'In Review' ? 'status-progress' : 
-                        'status-draft'
-                      }`}>
-                        {item.designStatus}
-                      </span>
+                      <div className="flex items-center gap-1">
+                        <span className={`status-badge ${
+                          item.designStatus === 'Released' ? 'status-ready' : 
+                          item.designStatus === 'In Review' ? 'status-progress' : 
+                          'status-draft'
+                        }`}>
+                          {item.designStatus}
+                        </span>
+                        <Database className="w-3 h-3 text-purple-500" title="PLM Mastered" />
+                      </div>
                     </div>
                   </>
                 )}
@@ -527,13 +582,18 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                 {(roleView === 'Procurement' || roleView === 'PM') && (
                   <>
                     <div className="w-24 px-3 py-4 border-r border-gray-200">
-                      <span className={`status-badge ${
-                        item.makeBuy === 'Make' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
-                        item.makeBuy === 'Buy' ? 'bg-green-50 text-green-700 border-green-200' : 
-                        'status-draft'
-                      }`}>
-                        {item.makeBuy}
-                      </span>
+                      <div className="flex items-center gap-1">
+                        <span className={`status-badge ${
+                          item.makeBuy === 'Make' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
+                          item.makeBuy === 'Buy' ? 'bg-green-50 text-green-700 border-green-200' : 
+                          'status-draft'
+                        }`}>
+                          {item.makeBuy}
+                        </span>
+                        {item.makeBuy !== 'TBD' && item.supplierSetupInERP && (
+                          <Database className="w-3 h-3 text-indigo-500" title="ERP Activated" />
+                        )}
+                      </div>
                     </div>
                     <div className="w-40 px-3 py-4 border-r border-gray-200 text-gray-900 text-xs">
                       {item.approvedSupplier || item.potentialSupplier || '—'}
@@ -541,26 +601,20 @@ const BOMGrid = ({ onNavigateToDashboard, onNavigateToCO, onSelectItem }) => {
                     <div className="w-28 px-3 py-4 border-r border-gray-200">
                       <span className={`status-badge ${
                         item.quoteStatus === 'Received' ? 'status-ready' : 
-                        item.quoteStatus === 'Pending' ? 'status-warning' : 
+                        item.quoteStatus === 'Pending' || item.quoteStatus === 'Requested' ? 'status-warning' : 
                         'status-draft'
                       }`}>
                         {item.quoteStatus}
                       </span>
                     </div>
+                    {/* V23: AML Column */}
+                    <div className="w-16 px-3 py-4 border-r border-gray-200">
+                      <span className={`inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-semibold ${getAMLStyle(item.aml)}`}>
+                        {item.aml >= 4 ? '4+' : item.aml}
+                      </span>
+                    </div>
                   </>
                 )}
-
-                {/* Lifecycle */}
-                <div className="w-28 px-3 py-4 border-r border-gray-200">
-                  <span className={`status-badge ${
-                    item.lifecycleState === 'Released' ? 'status-ready' : 
-                    item.lifecycleState === 'In Review' ? 'status-progress' : 
-                    item.lifecycleState === 'Obsolete' ? 'status-blocked' :
-                    'status-draft'
-                  }`}>
-                    {item.lifecycleState}
-                  </span>
-                </div>
 
                 {/* Readiness */}
                 <div className="w-28 px-3 py-4 border-r border-gray-200">
