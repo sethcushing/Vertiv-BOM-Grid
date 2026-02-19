@@ -1,4 +1,5 @@
-// Vertiv BOM Grid - Sample Data with realistic manufacturing scenarios
+// Vertiv BOM Grid - V23 Data Model with Lifecycle Stages
+// All items are mastered in PLM - no Pre-CO workspace concept
 
 export const sampleBOMData = [
   // Top-level assembly
@@ -10,7 +11,11 @@ export const sampleBOMData = [
     description: 'Main Power Distribution Unit',
     commodity: 'Electrical Assembly',
     plant: 'Columbus, OH',
-    isPreCO: false,
+    
+    // V23: Lifecycle Stage replaces isPreCO
+    lifecycleStage: 'CO Approved',
+    isNewPart: true,
+    aml: 0, // Approved Manufacturer List count
     
     engOwner: 'Sarah Chen',
     procurementOwner: 'Mike Johnson',
@@ -88,6 +93,7 @@ export const sampleBOMData = [
       governance: 'PLM'
     },
     
+    fieldsUnderChangeControl: ['itemNumber', 'revision', 'commodity', 'designStatus', 'lifecycleStage'],
     editableFields: [],
     lastUpdated: '2026-02-12 08:30:00'
   },
@@ -101,7 +107,10 @@ export const sampleBOMData = [
     description: 'Primary Circuit Board Assembly',
     commodity: 'PCB Assembly',
     plant: 'Columbus, OH',
-    isPreCO: false,
+    
+    lifecycleStage: 'Orderable',
+    isNewPart: false,
+    aml: 2,
     
     engOwner: 'Sarah Chen',
     procurementOwner: 'Mike Johnson',
@@ -171,6 +180,7 @@ export const sampleBOMData = [
       governance: 'PLM'
     },
     
+    fieldsUnderChangeControl: [],
     editableFields: [],
     lastUpdated: '2026-02-11 14:22:00'
   },
@@ -184,7 +194,10 @@ export const sampleBOMData = [
     description: 'Bare PCB - Main Controller',
     commodity: 'PCB',
     plant: 'Columbus, OH',
-    isPreCO: false,
+    
+    lifecycleStage: 'Orderable',
+    isNewPart: false,
+    aml: 4,
     
     engOwner: 'David Park',
     procurementOwner: 'Mike Johnson',
@@ -253,6 +266,7 @@ export const sampleBOMData = [
       governance: 'PLM'
     },
     
+    fieldsUnderChangeControl: [],
     editableFields: [],
     lastUpdated: '2026-02-09 10:15:00'
   },
@@ -265,7 +279,10 @@ export const sampleBOMData = [
     description: 'Microcontroller - ARM Cortex M4',
     commodity: 'Semiconductor',
     plant: 'Columbus, OH',
-    isPreCO: false,
+    
+    lifecycleStage: 'CO Approved',
+    isNewPart: true,
+    aml: 0,
     
     engOwner: 'David Park',
     procurementOwner: 'Mike Johnson',
@@ -351,6 +368,7 @@ export const sampleBOMData = [
       governance: 'PLM'
     },
     
+    fieldsUnderChangeControl: ['itemNumber', 'revision', 'designStatus'],
     editableFields: ['quoteStatus', 'supplier', 'leadTime'],
     lastUpdated: '2026-02-12 07:45:00'
   },
@@ -363,7 +381,10 @@ export const sampleBOMData = [
     description: 'Resistor 10K 0805 1%',
     commodity: 'Passive Component',
     plant: 'Columbus, OH',
-    isPreCO: false,
+    
+    lifecycleStage: 'Orderable',
+    isNewPart: false,
+    aml: 5,
     
     engOwner: 'David Park',
     procurementOwner: 'Jennifer Lee',
@@ -432,6 +453,7 @@ export const sampleBOMData = [
       governance: 'PLM'
     },
     
+    fieldsUnderChangeControl: [],
     editableFields: [],
     lastUpdated: '2026-02-08 16:30:00'
   },
@@ -445,7 +467,10 @@ export const sampleBOMData = [
     description: 'Power Supply Module',
     commodity: 'Power Supply',
     plant: 'Columbus, OH',
-    isPreCO: false,
+    
+    lifecycleStage: 'CCO In Progress',
+    isNewPart: true,
+    aml: 1,
     
     engOwner: 'Robert Kim',
     procurementOwner: 'Mike Johnson',
@@ -483,7 +508,7 @@ export const sampleBOMData = [
     
     pendingCONumber: 'CO-2026-001',
     coStatus: 'Released',
-    ccoStatus: 'Pending',
+    ccoStatus: 'In Progress',
     orderable: false,
     isSustainingCO: false,
     lifecycleState: 'Released',
@@ -533,6 +558,7 @@ export const sampleBOMData = [
       governance: 'PLM'
     },
     
+    fieldsUnderChangeControl: ['itemNumber', 'revision'],
     editableFields: [],
     lastUpdated: '2026-02-12 09:15:00'
   },
@@ -545,7 +571,10 @@ export const sampleBOMData = [
     description: 'Aluminum Enclosure - Custom',
     commodity: 'Sheet Metal',
     plant: 'Columbus, OH',
-    isPreCO: false,
+    
+    lifecycleStage: 'Orderable',
+    isNewPart: false,
+    aml: 3,
     
     engOwner: 'Sarah Chen',
     procurementOwner: 'Jennifer Lee',
@@ -614,6 +643,7 @@ export const sampleBOMData = [
       governance: 'PLM'
     },
     
+    fieldsUnderChangeControl: [],
     editableFields: [],
     lastUpdated: '2026-02-10 11:20:00'
   },
@@ -626,7 +656,10 @@ export const sampleBOMData = [
     description: 'Wire Harness - Main Power',
     commodity: 'Wire & Cable',
     plant: 'Columbus, OH',
-    isPreCO: false,
+    
+    lifecycleStage: 'Draft',
+    isNewPart: true,
+    aml: 0,
     
     engOwner: 'Robert Kim',
     procurementOwner: 'Jennifer Lee',
@@ -662,8 +695,8 @@ export const sampleBOMData = [
     effectivityStartDate: '',
     effectivityEndDate: '',
     
-    pendingCONumber: 'CO-2026-002',
-    coStatus: 'Pending',
+    pendingCONumber: '',
+    coStatus: 'Draft',
     ccoStatus: 'N/A',
     orderable: false,
     isSustainingCO: false,
@@ -708,6 +741,7 @@ export const sampleBOMData = [
       governance: 'PLM'
     },
     
+    fieldsUnderChangeControl: [],
     editableFields: ['quoteStatus', 'supplier'],
     lastUpdated: '2026-02-12 08:00:00'
   },
@@ -720,7 +754,10 @@ export const sampleBOMData = [
     description: 'Cooling Fan 120mm 24VDC',
     commodity: 'Thermal Management',
     plant: 'Columbus, OH',
-    isPreCO: false,
+    
+    lifecycleStage: 'CO Submitted',
+    isNewPart: true,
+    aml: 1,
     
     engOwner: 'Sarah Chen',
     procurementOwner: 'Mike Johnson',
@@ -757,7 +794,7 @@ export const sampleBOMData = [
     effectivityEndDate: '',
     
     pendingCONumber: 'CO-2026-001',
-    coStatus: 'Released',
+    coStatus: 'Submitted',
     ccoStatus: 'Pending',
     orderable: false,
     isSustainingCO: false,
@@ -797,6 +834,7 @@ export const sampleBOMData = [
       governance: 'PLM'
     },
     
+    fieldsUnderChangeControl: ['itemNumber', 'revision'],
     editableFields: [],
     lastUpdated: '2026-02-11 15:40:00'
   },
@@ -809,7 +847,10 @@ export const sampleBOMData = [
     description: 'Power Connector - IEC C14',
     commodity: 'Connector',
     plant: 'Columbus, OH',
-    isPreCO: false,
+    
+    lifecycleStage: 'Orderable',
+    isNewPart: false,
+    aml: 3,
     
     engOwner: 'David Park',
     procurementOwner: 'Jennifer Lee',
@@ -878,20 +919,25 @@ export const sampleBOMData = [
       governance: 'PLM'
     },
     
+    fieldsUnderChangeControl: [],
     editableFields: [],
     lastUpdated: '2026-02-09 13:25:00'
   },
   
-  // PRE-CO WORKSPACE ITEMS
+  // V23: Items previously marked as "Pre-CO" now have lifecycleStage: 'Draft' or 'Ready for CO'
+  // All items come from PLM - no more TEMP-xxx item numbers in production
   {
     id: '11',
     level: 1,
-    itemNumber: 'TEMP-001',
-    revision: 'Draft',
+    itemNumber: '100-0045-00',
+    revision: 'A',
     description: 'Battery Backup Module - New Design',
     commodity: 'Power Management',
     plant: 'Columbus, OH',
-    isPreCO: true,
+    
+    lifecycleStage: 'Draft',
+    isNewPart: true,
+    aml: 0,
     
     engOwner: 'Sarah Chen',
     procurementOwner: 'Jennifer Lee',
@@ -912,8 +958,8 @@ export const sampleBOMData = [
     leadTime: 0,
     hasBPA: false,
     orgOrderability: [
-      { org: 'Columbus', orderable: false, supplierSetup: false, blockers: ['Pre-CO item - not released'] },
-      { org: 'Monterrey', orderable: false, supplierSetup: false, blockers: ['Pre-CO item - not released'] }
+      { org: 'Columbus', orderable: false, supplierSetup: false, blockers: ['Draft item - not released'] },
+      { org: 'Monterrey', orderable: false, supplierSetup: false, blockers: ['Draft item - not released'] }
     ],
     supplierSetupByOrg: { 'Columbus': false, 'Monterrey': false },
     
@@ -928,7 +974,7 @@ export const sampleBOMData = [
     effectivityEndDate: '',
     
     pendingCONumber: '',
-    coStatus: 'Pre-CO',
+    coStatus: 'Draft',
     ccoStatus: 'N/A',
     orderable: false,
     isSustainingCO: false,
@@ -956,6 +1002,7 @@ export const sampleBOMData = [
       governance: 'PLM'
     },
     
+    fieldsUnderChangeControl: [],
     editableFields: ['description', 'commodity', 'supplier', 'quoteStatus', 'leadTime', 'ppapRequired', 'designStatus', 'designReadyToQuoteDate'],
     lastUpdated: '2026-02-12 10:15:00'
   },
@@ -963,12 +1010,15 @@ export const sampleBOMData = [
   {
     id: '12',
     level: 1,
-    itemNumber: 'DRAFT-002',
-    revision: 'Draft',
+    itemNumber: '100-0046-00',
+    revision: 'A',
     description: 'LED Status Indicator Panel',
     commodity: 'Display',
     plant: 'Columbus, OH',
-    isPreCO: true,
+    
+    lifecycleStage: 'Ready for CO',
+    isNewPart: true,
+    aml: 0,
     
     engOwner: 'David Park',
     procurementOwner: 'Mike Johnson',
@@ -989,8 +1039,8 @@ export const sampleBOMData = [
     leadTime: 21,
     hasBPA: false,
     orgOrderability: [
-      { org: 'Columbus', orderable: false, supplierSetup: false, blockers: ['Pre-CO item - not released', 'Quote pending'] },
-      { org: 'Monterrey', orderable: false, supplierSetup: false, blockers: ['Pre-CO item - not released', 'Quote pending'] }
+      { org: 'Columbus', orderable: false, supplierSetup: false, blockers: ['Quote pending'] },
+      { org: 'Monterrey', orderable: false, supplierSetup: false, blockers: ['Quote pending'] }
     ],
     supplierSetupByOrg: { 'Columbus': false, 'Monterrey': false },
     
@@ -1005,7 +1055,7 @@ export const sampleBOMData = [
     effectivityEndDate: '',
     
     pendingCONumber: '',
-    coStatus: 'Pre-CO',
+    coStatus: 'Ready',
     ccoStatus: 'N/A',
     orderable: false,
     isSustainingCO: false,
@@ -1033,6 +1083,7 @@ export const sampleBOMData = [
       governance: 'PLM'
     },
     
+    fieldsUnderChangeControl: [],
     editableFields: ['description', 'commodity', 'supplier', 'quoteStatus', 'leadTime', 'ppapRequired', 'designStatus', 'designReadyToQuoteDate', 'coo'],
     lastUpdated: '2026-02-12 09:45:00'
   },
@@ -1040,12 +1091,15 @@ export const sampleBOMData = [
   {
     id: '13',
     level: 1,
-    itemNumber: 'TEMP-003',
-    revision: 'Draft',
+    itemNumber: '100-0047-00',
+    revision: 'A',
     description: 'EMI Filter Assembly',
     commodity: 'Electrical',
     plant: 'Columbus, OH',
-    isPreCO: true,
+    
+    lifecycleStage: 'Draft',
+    isNewPart: true,
+    aml: 0,
     
     engOwner: 'Robert Kim',
     procurementOwner: 'Jennifer Lee',
@@ -1066,8 +1120,8 @@ export const sampleBOMData = [
     leadTime: 0,
     hasBPA: false,
     orgOrderability: [
-      { org: 'Columbus', orderable: false, supplierSetup: false, blockers: ['Pre-CO item - not released', 'Design concept phase'] },
-      { org: 'Monterrey', orderable: false, supplierSetup: false, blockers: ['Pre-CO item - not released', 'Design concept phase'] }
+      { org: 'Columbus', orderable: false, supplierSetup: false, blockers: ['Draft item - not released', 'Design concept phase'] },
+      { org: 'Monterrey', orderable: false, supplierSetup: false, blockers: ['Draft item - not released', 'Design concept phase'] }
     ],
     supplierSetupByOrg: { 'Columbus': false, 'Monterrey': false },
     
@@ -1082,7 +1136,7 @@ export const sampleBOMData = [
     effectivityEndDate: '',
     
     pendingCONumber: '',
-    coStatus: 'Pre-CO',
+    coStatus: 'Draft',
     ccoStatus: 'N/A',
     orderable: false,
     isSustainingCO: false,
@@ -1109,8 +1163,8 @@ export const sampleBOMData = [
     
     readinessTimestamps: {},
     
-    isAssembly: false,
-    hasChildren: false,
+    isAssembly: true,
+    hasChildren: true,
     parentId: '1',
     
     dataSource: {
@@ -1119,6 +1173,7 @@ export const sampleBOMData = [
       governance: 'PLM'
     },
     
+    fieldsUnderChangeControl: [],
     editableFields: ['description', 'commodity', 'supplier', 'quoteStatus', 'leadTime', 'ppapRequired', 'designStatus', 'designReadyToQuoteDate', 'coo', 'plant'],
     lastUpdated: '2026-02-12 08:20:00'
   },
@@ -1126,12 +1181,15 @@ export const sampleBOMData = [
   {
     id: '14',
     level: 2,
-    itemNumber: 'DRAFT-004',
-    revision: 'Draft',
+    itemNumber: '100-0048-00',
+    revision: 'A',
     description: 'Capacitor Array - High Voltage',
     commodity: 'Passive Component',
     plant: 'Columbus, OH',
-    isPreCO: true,
+    
+    lifecycleStage: 'Draft',
+    isNewPart: true,
+    aml: 0,
     
     engOwner: 'Robert Kim',
     procurementOwner: 'Mike Johnson',
@@ -1152,8 +1210,8 @@ export const sampleBOMData = [
     leadTime: 0,
     hasBPA: false,
     orgOrderability: [
-      { org: 'Columbus', orderable: false, supplierSetup: false, blockers: ['Pre-CO item - not released', 'Supplier not selected'] },
-      { org: 'Monterrey', orderable: false, supplierSetup: false, blockers: ['Pre-CO item - not released', 'Supplier not selected'] }
+      { org: 'Columbus', orderable: false, supplierSetup: false, blockers: ['Draft item - not released', 'Supplier not selected'] },
+      { org: 'Monterrey', orderable: false, supplierSetup: false, blockers: ['Draft item - not released', 'Supplier not selected'] }
     ],
     supplierSetupByOrg: { 'Columbus': false, 'Monterrey': false },
     
@@ -1168,7 +1226,7 @@ export const sampleBOMData = [
     effectivityEndDate: '',
     
     pendingCONumber: '',
-    coStatus: 'Pre-CO',
+    coStatus: 'Draft',
     ccoStatus: 'N/A',
     orderable: false,
     isSustainingCO: false,
@@ -1196,6 +1254,7 @@ export const sampleBOMData = [
       governance: 'PLM'
     },
     
+    fieldsUnderChangeControl: [],
     editableFields: ['description', 'commodity', 'supplier', 'quoteStatus', 'leadTime', 'ppapRequired', 'designStatus', 'designReadyToQuoteDate', 'coo', 'lltFlag'],
     lastUpdated: '2026-02-12 07:30:00'
   }
@@ -1205,16 +1264,40 @@ export const projectSummary = {
   projectName: 'Vertiv BOM Grid',
   projectCode: 'PRJ-2026-PDU-NG',
   overallReadiness: 72,
-  totalItems: 245,
+  totalItems: 14,
   totalBlockers: 8,
-  itemsAtRisk: 23,
-  preCOItems: 4,
+  itemsAtRisk: 4,
+  draftItems: 4,
   cycleTime: {
     designToQuote: 12,
     quoteToApproval: 8,
     approvalToOrderable: 15
   },
-  lastRefreshed: '2026-02-12 09:30:15',
+  lastRefreshed: '2026-02-19 09:30:15',
   targetCOSubmission: '2026-02-28',
   targetOrderable: '2026-03-31'
+};
+
+// V23 KPI Data
+export const bomKPIs = {
+  notYetInERP: {
+    percentage: 29,
+    count: 4,
+    total: 14
+  },
+  pendingCOs: {
+    count: 3,
+    avgAging: 12
+  },
+  notOrderable: {
+    percentage: 43,
+    count: 6,
+    total: 14
+  },
+  clearToBuild: {
+    forecastedDate: '2026-03-15',
+    requiredDate: '2026-03-10',
+    gapDays: 5,
+    status: 'late'
+  }
 };
