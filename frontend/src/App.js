@@ -1,52 +1,164 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import React, { useState } from 'react';
+import { Toaster } from 'sonner';
+import AppNavigation from './components/AppNavigation';
+import WelcomePage from './components/WelcomePage';
+import BOMSearch from './components/BOMSearch';
+import BOMGrid from './components/BOMGrid';
+import COReadinessReview from './components/COReadinessReview';
+import ProjectDashboard from './components/ProjectDashboard';
+import PMDashboardSearch from './components/PMDashboardSearch';
+import './App.css';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+function App() {
+  const [activeTab, setActiveTab] = useState('welcome');
+  const [viewState, setViewState] = useState('search');
+  const [selectedScope, setSelectedScope] = useState('Atlas 2.0 – NPDI Launch');
+  const [selectedItemNumber, setSelectedItemNumber] = useState('ASM-12000');
+  const [dashboardContext, setDashboardContext] = useState(null);
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
+  const handleTabChange = (tab) => {
+    if (tab === 'welcome') {
+      setActiveTab('welcome');
+    } else {
+      setActiveTab(tab);
+      setViewState('search');
     }
   };
 
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
+  const handleNavigateToHome = () => {
+    setActiveTab('welcome');
+    setViewState('search');
+  };
+
+  const handleNavigateToBOMContent = (itemNumber) => {
+    if (itemNumber) {
+      setSelectedItemNumber(itemNumber);
+    }
+    setViewState('content');
+  };
+
+  const handleNavigateToCOContent = (itemNumber) => {
+    if (itemNumber) {
+      setSelectedItemNumber(itemNumber);
+    }
+    setViewState('content');
+  };
+
+  const handleNavigateToPMContent = (context) => {
+    setDashboardContext(context);
+    setViewState('content');
+  };
+
+  const handleBackToSearch = () => {
+    setViewState('search');
+  };
 
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+    <div className="min-h-screen bg-slate-100">
+      {activeTab !== 'welcome' && (
+        <AppNavigation 
+          activeTab={activeTab === 'welcome' ? 'bom-grid' : activeTab} 
+          onTabChange={handleTabChange}
+          onNavigateToHome={handleNavigateToHome}
+        />
+      )}
+      <Toaster position="top-right" />
+      
+      {/* Welcome Page */}
+      {activeTab === 'welcome' && (
+        <WelcomePage
+          onNavigateToBOMGrid={() => {
+            setActiveTab('bom-grid');
+            setViewState('search');
+          }}
+          onNavigateToCOReview={() => {
+            setActiveTab('co-readiness');
+            setViewState('search');
+          }}
+          onNavigateToPMDashboard={() => {
+            setActiveTab('pm-dashboard');
+            setViewState('search');
+          }}
+        />
+      )}
+      
+      {/* BOM Grid Tab */}
+      {activeTab === 'bom-grid' && (
+        <>
+          {viewState === 'search' && (
+            <BOMSearch onNavigateToBOM={handleNavigateToBOMContent} />
+          )}
+          
+          {viewState === 'content' && (
+            <BOMGrid
+              onNavigateToDashboard={() => {
+                setActiveTab('pm-dashboard');
+                setViewState('content');
+              }}
+              onNavigateToCO={() => {
+                setActiveTab('co-readiness');
+                setViewState('content');
+              }}
+              onNavigateToSearch={handleBackToSearch}
+              selectedScope={selectedScope}
+              onScopeChange={setSelectedScope}
+            />
+          )}
+        </>
+      )}
 
-function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      {/* CO Readiness Review Tab */}
+      {activeTab === 'co-readiness' && (
+        <>
+          {viewState === 'search' && (
+            <BOMSearch onNavigateToBOM={handleNavigateToCOContent} />
+          )}
+          
+          {viewState === 'content' && (
+            <COReadinessReview
+              onNavigateToBOM={(itemNumber) => {
+                if (itemNumber) {
+                  setSelectedItemNumber(itemNumber);
+                }
+                setActiveTab('bom-grid');
+                setViewState('content');
+              }}
+              onNavigateToDashboard={() => {
+                setActiveTab('pm-dashboard');
+                setViewState('content');
+              }}
+              onNavigateToSearch={handleBackToSearch}
+              selectedScope={selectedScope}
+            />
+          )}
+        </>
+      )}
+
+      {/* PM Dashboard Tab */}
+      {activeTab === 'pm-dashboard' && (
+        <>
+          {viewState === 'search' && (
+            <PMDashboardSearch onNavigateToDashboard={handleNavigateToPMContent} />
+          )}
+          
+          {viewState === 'content' && (
+            <ProjectDashboard
+              onNavigateToBOM={() => {
+                setActiveTab('bom-grid');
+                setViewState('content');
+              }}
+              onNavigateToCO={() => {
+                setActiveTab('co-readiness');
+                setViewState('content');
+              }}
+              onNavigateToSearch={handleBackToSearch}
+              selectedScope={selectedScope}
+              onScopeChange={setSelectedScope}
+              dashboardContext={dashboardContext || undefined}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 }
