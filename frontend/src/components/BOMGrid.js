@@ -404,8 +404,15 @@ const BOMGrid = ({
               <h1 className="text-2xl font-bold text-slate-900">BOM Grid</h1>
               <p className="text-sm text-slate-500 mt-1">
                 Showing {visibleRows.length} of {bomData.length} items
-                {activeFilterCount > 0 && (
-                  <span className="ml-2 text-blue-600">({activeFilterCount} filter{activeFilterCount !== 1 ? 's' : ''} active)</span>
+                {(activeFilterCount > 0 || Object.keys(columnFilters).length > 0) && (
+                  <span className="ml-2 text-blue-600">
+                    ({activeFilterCount + Object.keys(columnFilters).length} filter{(activeFilterCount + Object.keys(columnFilters).length) !== 1 ? 's' : ''} active)
+                  </span>
+                )}
+                {sortConfig.key && (
+                  <span className="ml-2 text-slate-400">
+                    Sorted by {sortConfig.key} ({sortConfig.direction})
+                  </span>
                 )}
               </p>
             </div>
