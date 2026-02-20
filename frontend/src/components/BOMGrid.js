@@ -54,6 +54,8 @@ const BOMGrid = ({
   const [lastRefreshed, setLastRefreshed] = useState(new Date().toISOString());
   const [filters, setFilters] = useState({});
   const [activeFilterCount, setActiveFilterCount] = useState(0);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+  const [columnFilters, setColumnFilters] = useState({});
   
   const gridScrollRef = useRef(null);
   const topScrollRef = useRef(null);
