@@ -619,28 +619,64 @@ const BOMGrid = ({
                 <div className="w-10 px-2 py-3 border-r border-slate-300 bg-slate-100 sticky left-0 z-20"></div>
                 
                 {/* PD Section - Blue */}
-                <div className="w-16 px-3 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500 sticky left-10 z-20">Level</div>
-                <div className="w-32 px-3 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500 sticky left-[104px] z-20">Item Number</div>
-                <div className="w-24 px-3 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500">Revision</div>
-                <div className="w-40 px-3 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500">Commodity</div>
-                <div className="w-64 px-3 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500">Description</div>
-                <div className="w-36 px-3 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500">Plant</div>
-                <div className="w-32 px-3 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500">Lifecycle</div>
-                <div className="w-28 px-3 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500">CO #</div>
-                <div className="w-24 px-3 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500">Make/Buy</div>
-                <div className="w-24 px-3 py-3 border-r-2 border-r-blue-400 bg-blue-50/80 border-t-4 border-t-blue-500">AML</div>
+                <div className="w-16 px-2 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500 sticky left-10 z-20">
+                  <ColumnHeaderCell {...headerCellProps('level', 'Level')} />
+                </div>
+                <div className="w-32 px-2 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500 sticky left-[104px] z-20">
+                  <ColumnHeaderCell {...headerCellProps('itemNumber', 'Item #')} />
+                </div>
+                <div className="w-24 px-2 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500">
+                  <ColumnHeaderCell {...headerCellProps('revision', 'Rev')} />
+                </div>
+                <div className="w-40 px-2 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500">
+                  <ColumnHeaderCell {...headerCellProps('commodity', 'Commodity')} />
+                </div>
+                <div className="w-64 px-2 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500">
+                  <ColumnHeaderCell {...headerCellProps('description', 'Description')} />
+                </div>
+                <div className="w-36 px-2 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500">
+                  <ColumnHeaderCell {...headerCellProps('plant', 'Plant')} />
+                </div>
+                <div className="w-32 px-2 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500">
+                  <ColumnHeaderCell {...headerCellProps('lifecycleStage', 'Lifecycle')} />
+                </div>
+                <div className="w-28 px-2 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500">
+                  <ColumnHeaderCell {...headerCellProps('pendingCONumber', 'CO #')} />
+                </div>
+                <div className="w-24 px-2 py-3 border-r border-slate-200 bg-blue-50/80 border-t-4 border-t-blue-500">
+                  <ColumnHeaderCell {...headerCellProps('makeBuy', 'Make/Buy')} />
+                </div>
+                <div className="w-24 px-2 py-3 border-r-2 border-r-blue-400 bg-blue-50/80 border-t-4 border-t-blue-500">
+                  <ColumnHeaderCell {...headerCellProps('aml', 'AML')} />
+                </div>
 
                 {/* ERP Section - Green */}
-                <div className="w-36 px-3 py-3 border-r border-slate-200 bg-emerald-50/80 border-t-4 border-t-emerald-500">Supplier</div>
-                <div className="w-28 px-3 py-3 border-r border-slate-200 bg-emerald-50/80 border-t-4 border-t-emerald-500">Lead Time</div>
-                <div className="w-32 px-3 py-3 border-r border-slate-200 bg-emerald-50/80 border-t-4 border-t-emerald-500">CCO Status</div>
-                <div className="w-28 px-3 py-3 border-r-2 border-r-emerald-400 bg-emerald-50/80 border-t-4 border-t-emerald-500">Orderable</div>
+                <div className="w-36 px-2 py-3 border-r border-slate-200 bg-emerald-50/80 border-t-4 border-t-emerald-500">
+                  <ColumnHeaderCell {...headerCellProps('supplier', 'Supplier')} />
+                </div>
+                <div className="w-28 px-2 py-3 border-r border-slate-200 bg-emerald-50/80 border-t-4 border-t-emerald-500">
+                  <ColumnHeaderCell {...headerCellProps('leadTime', 'Lead Time')} />
+                </div>
+                <div className="w-32 px-2 py-3 border-r border-slate-200 bg-emerald-50/80 border-t-4 border-t-emerald-500">
+                  <ColumnHeaderCell {...headerCellProps('ccoStatus', 'CCO Status')} />
+                </div>
+                <div className="w-28 px-2 py-3 border-r-2 border-r-emerald-400 bg-emerald-50/80 border-t-4 border-t-emerald-500">
+                  <ColumnHeaderCell {...headerCellProps('orderable', 'Orderable')} />
+                </div>
 
                 {/* Quality Section */}
-                <div className="w-28 px-3 py-3 border-r border-slate-200 bg-slate-50 border-t-4 border-t-slate-400">PPAP</div>
-                <div className="w-24 px-3 py-3 border-r border-slate-200 bg-slate-50 border-t-4 border-t-slate-400">COO</div>
-                <div className="w-32 px-3 py-3 border-r border-slate-200 bg-slate-50 border-t-4 border-t-slate-400">Trade Status</div>
-                <div className="w-28 px-3 py-3 border-r border-slate-200 bg-slate-50 border-t-4 border-t-slate-400">Readiness</div>
+                <div className="w-28 px-2 py-3 border-r border-slate-200 bg-slate-50 border-t-4 border-t-slate-400">
+                  <ColumnHeaderCell {...headerCellProps('ppapStatus', 'PPAP')} />
+                </div>
+                <div className="w-24 px-2 py-3 border-r border-slate-200 bg-slate-50 border-t-4 border-t-slate-400">
+                  <ColumnHeaderCell {...headerCellProps('coo', 'COO')} />
+                </div>
+                <div className="w-32 px-2 py-3 border-r border-slate-200 bg-slate-50 border-t-4 border-t-slate-400">
+                  <ColumnHeaderCell {...headerCellProps('tradeComplianceStatus', 'Trade Status')} />
+                </div>
+                <div className="w-28 px-2 py-3 border-r border-slate-200 bg-slate-50 border-t-4 border-t-slate-400">
+                  <ColumnHeaderCell {...headerCellProps('overallReadiness', 'Readiness')} />
+                </div>
               </div>
             </div>
 
