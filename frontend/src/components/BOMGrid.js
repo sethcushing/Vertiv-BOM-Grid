@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { 
   ChevronDown, 
   ChevronRight, 
@@ -19,6 +19,7 @@ import axios from 'axios';
 import ItemDetailDrawer from './ItemDetailDrawer';
 import FilterPanel from './FilterPanel';
 import ColumnSettings from './ColumnSettings';
+import ColumnHeaderCell from './ColumnHeaderCell';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
