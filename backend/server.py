@@ -1438,3 +1438,16 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
+
+# Serve static frontend in production (Docker)
+STATIC_DIR = Path("/app/static")
+if STATIC_DIR.exists() and (STATIC_DIR / "index.html").exists():
+    app.mount("/static", StaticFiles(directory=str(STATIC_DIR / "static")), name="static-assets")
+
+    @app.get("/{full_path:path}")
+    async def serve_react_app(full_path: str):
+        # Serve actual files if they exist (e.g., favicon, manifest)
+        file_path = STATIC_DIR / full_path
+        if full_path and file_path.exists() and file_path.is_file():
+            return FileResponse(str(file_path))
+        return FileResponse(str(STATIC_DIR / "index.html"))
