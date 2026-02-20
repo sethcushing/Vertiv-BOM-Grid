@@ -6,7 +6,7 @@ Build a full-stack "Enterprise BOM Convergence Grid" application from a GitHub p
 ## Architecture
 - **Frontend**: React (CRA), Tailwind CSS, Radix UI, Recharts
 - **Backend**: FastAPI + MongoDB (motor async driver)
-- **Deployment**: Multi-stage Dockerfile (Node build -> Python production)
+- **Deployment**: Multi-stage Dockerfile (Node 20 build -> Python 3.11 production)
 - **Data**: Sample data seeded into MongoDB on startup
 
 ## Completed Features
@@ -22,14 +22,17 @@ Build a full-stack "Enterprise BOM Convergence Grid" application from a GitHub p
 - [x] Full REST API (CRUD for BOM items, projects, statistics)
 - [x] Multi-stage Dockerfile for Koyeb deployment
 - [x] Backend serves static frontend in production (Docker)
+- [x] **Column-level sorting** (click header to cycle asc/desc/none, sorts within hierarchy)
+- [x] **Column-level filtering** (per-column filter dropdowns with checkbox selection, All/None quick-select)
 
 ## Key Files
-- `/app/Dockerfile` - Multi-stage production Dockerfile
+- `/app/Dockerfile` - Multi-stage production Dockerfile (Node 20 + Python 3.11)
 - `/app/backend/server.py` - FastAPI API + static file serving
 - `/app/frontend/src/App.js` - Main router/layout
-- `/app/frontend/src/components/bom/BOMGrid.js` - Main grid
-- `/app/frontend/src/components/core/FilterPanel.js` - Filter panel
-- `/app/frontend/src/components/core/ColumnSettingsModal.js` - Column settings
+- `/app/frontend/src/components/BOMGrid.js` - Main grid with sort/filter logic
+- `/app/frontend/src/components/ColumnHeaderCell.js` - Interactive column headers (sort + filter)
+- `/app/frontend/src/components/FilterPanel.js` - Panel-level filter
+- `/app/frontend/src/components/ColumnSettings.js` - Column settings modal
 
 ## API Endpoints
 - `GET /api/bom-items` - List BOM items (with filters)
