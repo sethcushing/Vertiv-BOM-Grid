@@ -127,7 +127,7 @@ const BOMGrid = ({
     setExpandedItems(newExpanded);
   };
 
-  // Apply filters to data
+  // Apply panel filters to data
   const filteredData = useMemo(() => {
     if (!filters || Object.keys(filters).length === 0) return bomData;
     
@@ -144,24 +144,102 @@ const BOMGrid = ({
     });
   }, [bomData, filters]);
 
-  // Build visible rows with hierarchy
+  // Apply column-level filters
+  const columnFilteredData = useMemo(() => {
+    const activeColFilters = Object.entries(columnFilters).filter(([, vals]) => vals.length > 0);
+    if (activeColFilters.length === 0) return filteredData;
+
+    return filteredData.filter(item => {
+      return activeColFilters.every(([key, values]) => {
+        const raw = item[key];
+        const displayVal = key === 'orderable' ? (raw ? 'Yes' : 'No')
+          : key === 'leadTime' ? (raw > 0 ? `${raw} days` : '-')
+          : String(raw ?? '-');
+        return values.includes(displayVal);
+      });
+    });
+  }, [filteredData, columnFilters]);
+
+  // Get unique display values for a column (for filter dropdowns)
+  const getUniqueValues = useCallback((columnKey) => {
+    const vals = new Set();
+    filteredData.forEach(item => {
+      const raw = item[columnKey];
+      const display = columnKey === 'orderable' ? (raw ? 'Yes' : 'No')
+        : columnKey === 'leadTime' ? (raw > 0 ? `${raw} days` : '-')
+        : String(raw ?? '-');
+      vals.add(display);
+    });
+    return [...vals].sort();
+  }, [filteredData]);
+
+  // Sort handler
+  const handleSort = useCallback((key) => {
+    setSortConfig(prev => {
+      if (prev.key === key) {
+        if (prev.direction === 'asc') return { key, direction: 'desc' };
+        if (prev.direction === 'desc') return { key: null, direction: null };
+      }
+      return { key, direction: 'asc' };
+    });
+  }, []);
+
+  // Column filter handler
+  const handleColumnFilter = useCallback((key, values) => {
+    setColumnFilters(prev => {
+      const next = { ...prev };
+      if (values.length === 0) delete next[key];
+      else next[key] = values;
+      return next;
+    });
+  }, []);
+
+  // Common props for header cells
+  const headerCellProps = useCallback((columnKey, label) => ({
+    columnKey,
+    label,
+    sortConfig,
+    onSort: handleSort,
+    columnFilters,
+    uniqueValues: getUniqueValues(columnKey),
+    onFilterApply: handleColumnFilter,
+  }), [sortConfig, columnFilters, getUniqueValues, handleSort, handleColumnFilter]);
+
+  // Build visible rows with hierarchy and sorting
   const visibleRows = useMemo(() => {
     const rows = [];
+
+    const sortItems = (items) => {
+      if (!sortConfig.key || !sortConfig.direction) return items;
+      return [...items].sort((a, b) => {
+        let aVal = a[sortConfig.key];
+        let bVal = b[sortConfig.key];
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+          return sortConfig.direction === 'asc' ? aVal - bVal : bVal - aVal;
+        }
+        if (typeof aVal === 'boolean' && typeof bVal === 'boolean') {
+          return sortConfig.direction === 'asc' ? (aVal === bVal ? 0 : aVal ? -1 : 1) : (aVal === bVal ? 0 : aVal ? 1 : -1);
+        }
+        aVal = String(aVal ?? '');
+        bVal = String(bVal ?? '');
+        const cmp = aVal.localeCompare(bVal);
+        return sortConfig.direction === 'asc' ? cmp : -cmp;
+      });
+    };
     
     const addItemAndChildren = (item) => {
       rows.push(item);
       if (item.hasChildren && expandedItems.has(item.id)) {
-        const children = filteredData.filter(i => i.parentId === item.id);
-        children.forEach(child => addItemAndChildren(child));
+        const children = columnFilteredData.filter(i => i.parentId === item.id);
+        sortItems(children).forEach(child => addItemAndChildren(child));
       }
     };
 
-    filteredData.filter(item => item.level === 0).forEach(item => {
-      addItemAndChildren(item);
-    });
+    const topItems = columnFilteredData.filter(item => item.level === 0);
+    sortItems(topItems).forEach(item => addItemAndChildren(item));
 
     return rows;
-  }, [filteredData, expandedItems]);
+  }, [columnFilteredData, expandedItems, sortConfig]);
 
   const handleRefresh = async () => {
     setLoading(true);
